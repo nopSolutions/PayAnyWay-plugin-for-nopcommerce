@@ -135,7 +135,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
 
         public override ProcessPaymentRequest GetPaymentInfo(FormCollection form)
         {
-            throw new NotImplementedException();
+            return new ProcessPaymentRequest();
         }
     }
 }
