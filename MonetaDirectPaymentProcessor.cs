@@ -149,5 +149,24 @@ namespace Nop.Plugin.Payments.MonetaDirect
             base.Install();
         }
 
+        public override void Uninstall()
+        {
+            _settingService.DeleteSetting<MonetaDirectPaymentSettings>();
+
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.Amount");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntId");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntTestMode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.HeshCode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntCurrencyCode");
+    
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage.Hint");
+
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.RedirectionTip");
+
+            base.Uninstall();
+        }
     }
 }
