@@ -108,7 +108,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public bool CanRePostProcessPayment(Order order)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
