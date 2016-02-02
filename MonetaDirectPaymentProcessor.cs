@@ -59,7 +59,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public bool HidePaymentMethod(IList<ShoppingCartItem> cart)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public decimal GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
