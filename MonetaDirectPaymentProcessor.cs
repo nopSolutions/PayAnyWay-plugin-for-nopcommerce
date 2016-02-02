@@ -84,5 +84,33 @@ namespace Nop.Plugin.Payments.MonetaDirect
         public RecurringPaymentType RecurringPaymentType { get; }
         public PaymentMethodType PaymentMethodType { get; }
         public bool SkipPaymentInfo { get; }
+
+        public override void Install()
+        {
+            //settings
+            var settings = new MonetaDirectPaymentSettings
+            {
+                MntTestMode = true,
+            };
+            _settingService.SaveSetting(settings);
+
+            //locales
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.Amount", "Amount");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntId", "Store identifier");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntTestMode", "Is made in test mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.HeshCode", "Hesh-code");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntCurrencyCode", "ISO currency code");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage", "");
+
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee", "");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee", "Additional fee");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
+
+
+            base.Install();
+        }
+
     }
 }
