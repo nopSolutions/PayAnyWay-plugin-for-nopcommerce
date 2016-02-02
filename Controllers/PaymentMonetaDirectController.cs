@@ -128,6 +128,12 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
             return Configure();
         }
 
+        [ChildActionOnly]
+        public ActionResult PaymentInfo()
+        {
+            return View("~/Plugins/Payments.MonetaDirect/Views/PaymentMonetaDirect/PaymentInfo.cshtml");
+        }
+
         public override IList<string> ValidatePaymentForm(FormCollection form)
         {
             return new List<string>();
