@@ -113,15 +113,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
         {
             throw new NotImplementedException();
         }
-
-        public bool SupportCapture { get; }
-        public bool SupportPartiallyRefund { get; }
-        public bool SupportRefund { get; }
-        public bool SupportVoid { get; }
-        public RecurringPaymentType RecurringPaymentType { get; }
-        public PaymentMethodType PaymentMethodType { get; }
-        public bool SkipPaymentInfo { get; }
-
+ 
         public override void Install()
         {
             //settings
@@ -168,5 +160,21 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
             base.Uninstall();
         }
+        #region Properties
+        public bool SupportCapture => false;
+
+        public bool SupportPartiallyRefund => false;
+
+        public bool SupportRefund => false;
+
+        public bool SupportVoid => false;
+
+        public RecurringPaymentType RecurringPaymentType => RecurringPaymentType.NotSupported;
+
+        public PaymentMethodType PaymentMethodType => PaymentMethodType.Redirection;
+
+        public bool SkipPaymentInfo => false;
+
+        #endregion
     }
 }
