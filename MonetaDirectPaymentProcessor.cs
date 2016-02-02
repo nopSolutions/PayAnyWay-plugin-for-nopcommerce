@@ -69,30 +69,42 @@ namespace Nop.Plugin.Payments.MonetaDirect
             return result;
         }
 
+        #region Not implemented methods
         public CapturePaymentResult Capture(CapturePaymentRequest capturePaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new CapturePaymentResult();
+            result.AddError("Capture method not supported");
+            return result;
         }
 
         public RefundPaymentResult Refund(RefundPaymentRequest refundPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new RefundPaymentResult();
+            result.AddError("Refund method not supported");
+            return result;
         }
 
         public VoidPaymentResult Void(VoidPaymentRequest voidPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new VoidPaymentResult();
+            result.AddError("Void method not supported");
+            return result;
         }
 
         public ProcessPaymentResult ProcessRecurringPayment(ProcessPaymentRequest processPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new ProcessPaymentResult();
+            result.AddError("Recurring payment not supported");
+            return result;
         }
 
         public CancelRecurringPaymentResult CancelRecurringPayment(CancelRecurringPaymentRequest cancelPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new CancelRecurringPaymentResult();
+            result.AddError("Recurring payment not supported");
+            return result;
         }
+        #endregion
 
         public bool CanRePostProcessPayment(Order order)
         {
