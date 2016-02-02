@@ -47,6 +47,8 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         #endregion
 
+        #region Methods
+
         public ProcessPaymentResult ProcessPayment(ProcessPaymentRequest processPaymentRequest)
         {
             return new ProcessPaymentResult {NewPaymentStatus = PaymentStatus.Pending};
@@ -174,6 +176,9 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
             base.Uninstall();
         }
+
+        #endregion
+
         #region Properties
         public bool SupportCapture => false;
 
