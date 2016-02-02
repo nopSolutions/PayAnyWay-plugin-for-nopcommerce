@@ -49,7 +49,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public ProcessPaymentResult ProcessPayment(ProcessPaymentRequest processPaymentRequest)
         {
-            throw new NotImplementedException();
+            return new ProcessPaymentResult {NewPaymentStatus = PaymentStatus.Pending};
         }
 
         public void PostProcessPayment(PostProcessPaymentRequest postProcessPaymentRequest)
