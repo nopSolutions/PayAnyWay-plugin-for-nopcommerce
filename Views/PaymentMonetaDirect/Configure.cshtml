@@ -9,7 +9,85 @@
 {
     @Html.AntiForgeryToken()
     <table class="adminContent">
-        
+        <tr>
+            <td colspan="2">
+                <h2>
+                    Instructions on setting up a account in the payment system see the link
+                    <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="MONETA.Assistant">MONETA.Assistant</a>
+                    on page eight.
+                </h2><br/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <hr/>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.MntIdOverrideForStore, model => model.MntId, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.MntId):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MntId)
+                @Html.ValidationMessageFor(model => model.MntId)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.MntTestModeOverrideForStore, model => model.MntTestMode, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.MntTestMode):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MntTestMode)
+                @Html.ValidationMessageFor(model => model.MntTestMode)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.HeshCodeOverrideForStore, model => model.HeshCode, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.HeshCode):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.HeshCode)
+                @Html.ValidationMessageFor(model => model.HeshCode)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.MntCurrencyCodeOverrideForStore, model => model.MntCurrencyCode, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.MntCurrencyCodeValues):
+            </td>
+            <td class="adminData">
+                @Html.DropDownList("MntCurrencyCode", Model.MntCurrencyCodeValues)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeeOverrideForStore, model => model.AdditionalFee, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.AdditionalFee):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.AdditionalFee)
+                @Html.ValidationMessageFor(model => model.AdditionalFee)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeePercentageOverrideForStore, model => model.AdditionalFeePercentage, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.AdditionalFeePercentage):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.AdditionalFeePercentage)
+                @Html.ValidationMessageFor(model => model.AdditionalFeePercentage)
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            </td>
+        </tr>
     </table>
     
 }
