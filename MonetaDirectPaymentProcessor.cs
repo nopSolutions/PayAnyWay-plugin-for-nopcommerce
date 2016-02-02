@@ -1,17 +1,52 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.Routing;
+using Nop.Core;
+using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Plugins;
+using Nop.Services.Configuration;
+using Nop.Services.Customers;
+using Nop.Services.Directory;
+using Nop.Services.Localization;
+using Nop.Services.Orders;
 using Nop.Services.Payments;
 
 namespace Nop.Plugin.Payments.MonetaDirect
 {
-    /// <summary>
-    /// PayPalDirect payment processor
-    /// </summary>
+
     public class MonetaDirectPaymentProcessor : BasePlugin, IPaymentMethod
     {
+        #region Fields
+
+        private readonly MonetaDirectPaymentSettings _monetaDirectPaymentSettings;
+        private readonly ISettingService _settingService;
+        private readonly ICurrencyService _currencyService;
+        private readonly ICustomerService _customerService;
+        private readonly CurrencySettings _currencySettings;
+        private readonly IWebHelper _webHelper;
+        private readonly IOrderTotalCalculationService _orderTotalCalculationService;
+        #endregion
+
+        #region Ctor
+
+        public MonetaDirectPaymentProcessor(MonetaDirectPaymentSettings monetaDirectPaymentSettings,
+            ISettingService settingService,
+            ICurrencyService currencyService, ICustomerService customerService,
+            CurrencySettings currencySettings, IWebHelper webHelper,
+            IOrderTotalCalculationService orderTotalCalculationService)
+        {
+            this._monetaDirectPaymentSettings = monetaDirectPaymentSettings;
+            this._settingService = settingService;
+            this._currencyService = currencyService;
+            this._customerService = customerService;
+            this._currencySettings = currencySettings;
+            this._webHelper = webHelper;
+            this._orderTotalCalculationService = orderTotalCalculationService;
+        }
+
+        #endregion
+
         public ProcessPaymentResult ProcessPayment(ProcessPaymentRequest processPaymentRequest)
         {
             throw new NotImplementedException();
