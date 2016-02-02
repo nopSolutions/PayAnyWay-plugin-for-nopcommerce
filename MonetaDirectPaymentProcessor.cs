@@ -99,7 +99,9 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
         {
-            throw new NotImplementedException();
+            actionName = "Configure";
+            controllerName = "PaymentMonetaDirect";
+            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaDirect.Controllers" }, { "area", null } };
         }
 
         public void GetPaymentInfoRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
