@@ -125,7 +125,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public Type GetControllerType()
         {
-            throw new NotImplementedException();
+            return typeof(PaymentMonetaDirectController);
         }
  
         public override void Install()
