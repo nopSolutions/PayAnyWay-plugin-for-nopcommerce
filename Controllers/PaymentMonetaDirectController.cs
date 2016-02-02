@@ -130,7 +130,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
 
         public override IList<string> ValidatePaymentForm(FormCollection form)
         {
-            throw new NotImplementedException();
+            return new List<string>();
         }
 
         public override ProcessPaymentRequest GetPaymentInfo(FormCollection form)
