@@ -64,7 +64,9 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public decimal GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
         {
-            throw new NotImplementedException();
+            var result = this.CalculateAdditionalFee(_orderTotalCalculationService, cart,
+                _monetaDirectPaymentSettings.AdditionalFee, _monetaDirectPaymentSettings.AdditionalFeePercentage);
+            return result;
         }
 
         public CapturePaymentResult Capture(CapturePaymentRequest capturePaymentRequest)
