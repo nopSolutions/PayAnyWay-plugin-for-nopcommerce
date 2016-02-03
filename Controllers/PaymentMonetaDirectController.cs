@@ -139,7 +139,8 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
         [ValidateInput(false)]
         public ActionResult ConfirmPay()
         {
-            var processor = _paymentService.LoadPaymentMethodBySystemName("Payments.MonetaDirect") as MonetaDirectPaymentProcessor;
+            var processor =
+                _paymentService.LoadPaymentMethodBySystemName("Payments.MonetaDirect") as MonetaDirectPaymentProcessor;
             if (processor == null ||
                 !processor.IsPaymentMethodActive(_paymentSettings) || !processor.PluginDescriptor.Installed)
                 throw new NopException("MonetaDirect module cannot be loaded");
@@ -147,39 +148,35 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
 
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
             Guid orderGuid;
-            if (Guid.TryParse(orderId, out orderGuid))
+            if (!Guid.TryParse(orderId, out orderGuid))
             {
-                var order = _orderService.GetOrderByGuid(orderGuid);
-                if (order == null)
-                {
-                    return Content("<html><body><p>nopCommerce. Order cannot be loaded</p></body></html>");
-                }
-                
-                var customerId =_webHelper.QueryString<int>("MNT_SUBSCRIBER_ID");
-                var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
-
-                var setting = _settingService.LoadSetting<MonetaDirectPaymentSettings>();
-
-                var model = setting.CreatePaymentInfoModel(customerId, orderGuid, order.OrderTotal);
-                
-                if (customerId != order.CustomerId || model.MntSignature != signature)
-                {
-                    return Content("<html><body><p>nopCommerce. Invalid order data</p></body></html>");
-                }
-
-                if (_orderProcessingService.CanMarkOrderAsPaid(order))
-                {
-                    _orderProcessingService.MarkOrderAsPaid(order);
-                }
+                return Content("<html><body><p>nopCommerce. Invalid order GUID</p></body></html>");
             }
-            else
+
+            var order = _orderService.GetOrderByGuid(orderGuid);
+            if (order == null)
             {
-                return Content("<html><body><p>nopCommerce. Invalid order id</p></body></html>");
+                return Content("<html><body><p>nopCommerce. Order cannot be loaded</p></body></html>");
             }
-           
+
+            var customerId = _webHelper.QueryString<int>("MNT_SUBSCRIBER_ID");
+            var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
+            var setting = _settingService.LoadSetting<MonetaDirectPaymentSettings>();
+            var model = setting.CreatePaymentInfoModel(customerId, orderGuid, order.OrderTotal);
+
+            if (customerId != order.CustomerId || model.MntSignature != signature)
+            {
+                return Content("<html><body><p>nopCommerce. Invalid order data</p></body></html>");
+            }
+
+            if (_orderProcessingService.CanMarkOrderAsPaid(order))
+            {
+                _orderProcessingService.MarkOrderAsPaid(order);
+            }
+
             return Content("<html><body><p>Your order has been paid</p></body></html>");
         }
-        
+
 
         public override IList<string> ValidatePaymentForm(FormCollection form)
         {
