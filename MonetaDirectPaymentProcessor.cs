@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Web.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Directory;
@@ -13,6 +14,7 @@ using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
+using Nop.Web.Framework;
 
 namespace Nop.Plugin.Payments.MonetaDirect
 {
@@ -58,7 +60,29 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public void PostProcessPayment(PostProcessPaymentRequest postProcessPaymentRequest)
         {
-            throw new NotImplementedException();
+            var customerId = postProcessPaymentRequest.Order.CustomerId;
+            var orderId = postProcessPaymentRequest.Order.OrderGuid.ToString();
+            var model = _monetaDirectPaymentSettings.CreatePaymentInfoModel;
+            var orderTotal = postProcessPaymentRequest.Order.OrderTotal;
+
+            model.MntSubscriberId = customerId.ToString();
+            model.MntTransactionId = orderId;
+            model.MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal);
+
+
+            var post = new RemotePost
+            {
+                FormName = "PayPoint",
+                Url = model.MonetaAssistantUrl
+            };
+            post.Add("MNT_ID", model.MntId);
+            post.Add("MNT_TRANSACTION_ID", model.MntTransactionId);
+            post.Add("MNT_CURRENCY_CODE", model.MntCurrencyCode);
+            post.Add("MNT_AMOUNT", model.MntAmount);
+            post.Add("MNT_TEST_MODE", model.MntTestMode.ToString());
+            post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId);
+            post.Add("MNT_SIGNATURE", model.MntSignature);
+            post.Post();
         }
 
         public bool HidePaymentMethod(IList<ShoppingCartItem> cart)
