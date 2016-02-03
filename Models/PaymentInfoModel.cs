@@ -60,14 +60,15 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         {
             get
             {
-                var text = $"{MntId}{MntTransactionId}{MntAmount}{MntCurrencyCode}{MntSubscriberId}{(MntTestMode ? 1 : 0)}{HeshCode}";
+                var text =
+                    $"{MntId}{MntTransactionId}{MntAmount}{MntCurrencyCode}{MntSubscriberId}{MntTestMode}{MntHeshCode}";
 
                 var enc = Encoding.Default.GetEncoder();
                 var length = text.Length;
                 var data = new byte[length];
                 enc.GetBytes(text.ToCharArray(), 0, length, data, 0, true);
                 byte[] result;
-                
+
                 using (var md5 = new MD5CryptoServiceProvider())
                 {
                     result = md5.ComputeHash(data);
