@@ -61,15 +61,11 @@ namespace Nop.Plugin.Payments.MonetaDirect
         public void PostProcessPayment(PostProcessPaymentRequest postProcessPaymentRequest)
         {
             var customerId = postProcessPaymentRequest.Order.CustomerId;
-            var orderId = postProcessPaymentRequest.Order.OrderGuid.ToString();
-            var model = _monetaDirectPaymentSettings.CreatePaymentInfoModel;
+            var orderGuid = postProcessPaymentRequest.Order.OrderGuid;
             var orderTotal = postProcessPaymentRequest.Order.OrderTotal;
 
-            model.MntSubscriberId = customerId.ToString();
-            model.MntTransactionId = orderId;
-            model.MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal);
-
-
+            var model = _monetaDirectPaymentSettings.CreatePaymentInfoModel(customerId, orderGuid, orderTotal);
+           
             var post = new RemotePost
             {
                 FormName = "PayPoint",
@@ -80,7 +76,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
             post.Add("MNT_CURRENCY_CODE", model.MntCurrencyCode);
             post.Add("MNT_AMOUNT", model.MntAmount);
             post.Add("MNT_TEST_MODE", model.MntTestMode.ToString());
-            post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId);
+            post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId.ToString());
             post.Add("MNT_SIGNATURE", model.MntSignature);
             post.Post();
         }

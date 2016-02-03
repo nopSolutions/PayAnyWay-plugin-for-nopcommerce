@@ -1,4 +1,6 @@
-﻿using Nop.Core.Configuration;
+﻿using System;
+using System.Globalization;
+using Nop.Core.Configuration;
 using Nop.Core;
 using Nop.Core.Infrastructure;
 using Nop.Plugin.Payments.MonetaDirect.Models;
@@ -41,11 +43,12 @@ namespace Nop.Plugin.Payments.MonetaDirect
         /// <summary>
         /// Create PaymentInfoModel by settings
         /// </summary>
-        public PaymentInfoModel CreatePaymentInfoModel
+        /// <param name="customerId">Customer id</param>
+        /// <param name="orderGuid">Order GUID</param>
+        /// <param name="orderTotal">Total sum</param>
+        public PaymentInfoModel CreatePaymentInfoModel(int customerId, Guid orderGuid, decimal orderTotal)
         {
-            get
-            {
-                var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
+            var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
                 var workContext = EngineContext.Current.Resolve<IWorkContext>();
 
                 return new PaymentInfoModel
@@ -53,9 +56,12 @@ namespace Nop.Plugin.Payments.MonetaDirect
                     MntId = MntId,
                     MntTestMode = MntTestMode ? 1 : 0,
                     MntHeshCode = HeshCode,
-                    MntCurrencyCode = MntCurrencyCode.GetLocalizedEnum(localizationService, workContext).Replace(" ", "")
+                    MntCurrencyCode = MntCurrencyCode.GetLocalizedEnum(localizationService, workContext).Replace(" ", ""),
+                    MntSubscriberId = customerId,
+                    MntTransactionId = orderGuid.ToString(),
+                    MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
                 };
-            }
+            
         }
     }
 
