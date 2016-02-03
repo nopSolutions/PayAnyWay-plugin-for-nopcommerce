@@ -55,6 +55,7 @@
     <Compile Include="MonetaDirectPaymentProcessor.cs" />
     <Compile Include="MonetaDirectPaymentSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteProvider.cs" />
     <Compile Include="Validators\PaymentInfoValidator.cs" />
   </ItemGroup>
   <ItemGroup>
