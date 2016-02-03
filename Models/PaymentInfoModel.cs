@@ -40,7 +40,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         /// Customer id
         /// </summary>
         [AllowHtml]
-        public string MntSubscriberId { get; set; }
+        public int MntSubscriberId { get; set; }
 
         /// <summary>
         /// Hesh-code
