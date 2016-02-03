@@ -1,4 +1,8 @@
 ﻿using Nop.Core.Configuration;
+using Nop.Core;
+using Nop.Core.Infrastructure;
+using Nop.Plugin.Payments.MonetaDirect.Models;
+using Nop.Services.Localization;
 
 namespace Nop.Plugin.Payments.MonetaDirect
 {
@@ -33,6 +37,23 @@ namespace Nop.Plugin.Payments.MonetaDirect
         /// Additional fee
         /// </summary>
         public decimal AdditionalFee { get; set; }
+
+        public PaymentInfoModel CreatePaymentInfoModel
+        {
+            get
+            {
+                var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
+                var workContext = EngineContext.Current.Resolve<IWorkContext>();
+
+                return new PaymentInfoModel
+                {
+                    MntId = MntId,
+                    MntTestMode = MntTestMode ? 1 : 0,
+                    MntHeshCode = HeshCode,
+                    MntCurrencyCode = MntCurrencyCode.GetLocalizedEnum(localizationService, workContext).Replace(" ", "")
+                };
+            }
+        }
     }
 
 }
