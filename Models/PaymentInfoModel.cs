@@ -20,7 +20,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         /// </summary>
         [AllowHtml]
         [NopResourceDisplayName("Plugins.Payments.MonetaDirect.Fields.Amount")]
-        public decimal MntAmount { get; set; }
+        public string MntAmount { get; set; }
 
         /// <summary>
         /// Order ID
