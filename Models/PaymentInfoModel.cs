@@ -50,7 +50,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         /// <summary>
         /// Indicating that the request is made in test mode
         /// </summary>
-        public bool MntTestMode { get; set; }
+        public int MntTestMode { get; set; }
 
         /// <summary>
         /// Code to identify the sender and check the integrity of files. 
