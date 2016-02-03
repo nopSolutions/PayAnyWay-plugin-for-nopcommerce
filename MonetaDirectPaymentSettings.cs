@@ -38,6 +38,9 @@ namespace Nop.Plugin.Payments.MonetaDirect
         /// </summary>
         public decimal AdditionalFee { get; set; }
 
+        /// <summary>
+        /// Create PaymentInfoModel by settings
+        /// </summary>
         public PaymentInfoModel CreatePaymentInfoModel
         {
             get
