@@ -45,7 +45,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         /// <summary>
         /// Hesh-code
         /// </summary>
-        public int HeshCode { get; set; }
+        public int MntHeshCode { get; set; }
 
         /// <summary>
         /// Indicating that the request is made in test mode
