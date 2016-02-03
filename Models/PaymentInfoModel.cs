@@ -23,7 +23,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         public string MntAmount { get; set; }
 
         /// <summary>
-        /// Order ID
+        /// Order GUID
         /// </summary>
         [AllowHtml]
         public string MntTransactionId { get; set; }
@@ -37,7 +37,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         public string MntCurrencyCode { get; set; }
 
         /// <summary>
-        /// User id
+        /// Customer id
         /// </summary>
         [AllowHtml]
         public string MntSubscriberId { get; set; }
