@@ -78,5 +78,22 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
                     .Replace("-", string.Empty).ToLower();
             }
         }
+
+        /// <summary>
+        /// MONETA.Assistant url
+        /// </summary>
+        public string MonetaAssistantUrl
+        {
+            get
+            {
+#if DEBUG
+                return "https://demo.moneta.ru/assistant.htm";
+#endif
+
+#if !DEBUG
+                return "https://www.payanyway.ru/assistant.htm";
+#endif
+            }
+        }
     }
 }
