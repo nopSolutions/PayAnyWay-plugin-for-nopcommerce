@@ -136,6 +136,20 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
             return View("~/Plugins/Payments.MonetaDirect/Views/PaymentMonetaDirect/PaymentInfo.cshtml");
         }
 
+        private bool CheckOrderData(Order order)
+        {
+            var setting = _settingService.LoadSetting<MonetaDirectPaymentSettings>();
+            var model = setting.CreatePaymentInfoModel(order.CustomerId, order.OrderGuid, order.OrderTotal);
+
+            var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
+            var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
+           
+            var checkDtataString =
+                $"{ model.MntId}{ model.MntTransactionId}{operationId}{model.MntAmount}{model.MntCurrencyCode}{model.MntSubscriberId}{model.MntTestMode}{model.MntHeshCode}";
+
+            return model.GetMD5(checkDtataString) == signature;
+        }
+
         [ValidateInput(false)]
         public ActionResult ConfirmPay()
         {
@@ -158,24 +172,8 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
             {
                 return Content("<html><body><p>nopCommerce. Order cannot be loaded</p></body></html>");
             }
-
-            var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
-            var setting = _settingService.LoadSetting<MonetaDirectPaymentSettings>();
-            var model = setting.CreatePaymentInfoModel(order.CustomerId, orderGuid, order.OrderTotal);
-
-            var mntId = model.MntId;
-            var transctId = model.MntTransactionId;
-            var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
-            var amount = model.MntAmount;
-            var currencyCode = model.MntCurrencyCode;
-            var subdcriberId = model.MntSubscriberId;
-            var testMode = model.MntTestMode;
-            var heshCode = model.MntHeshCode;
-
-            var checkDtataString =
-                $"{mntId}{transctId}{operationId}{amount}{currencyCode}{subdcriberId}{testMode}{heshCode}";
-
-            if (model.GetMD5(checkDtataString) != signature)
+            
+            if (!CheckOrderData(order))
             {
                 return Content("<html><body><p>nopCommerce. Invalid order data</p></body></html>");
             }
