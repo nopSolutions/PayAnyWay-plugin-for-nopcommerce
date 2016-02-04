@@ -159,12 +159,23 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
                 return Content("<html><body><p>nopCommerce. Order cannot be loaded</p></body></html>");
             }
 
-            var customerId = _webHelper.QueryString<int>("MNT_SUBSCRIBER_ID");
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
             var setting = _settingService.LoadSetting<MonetaDirectPaymentSettings>();
-            var model = setting.CreatePaymentInfoModel(customerId, orderGuid, order.OrderTotal);
+            var model = setting.CreatePaymentInfoModel(order.CustomerId, orderGuid, order.OrderTotal);
 
-            if (customerId != order.CustomerId || model.MntSignature != signature)
+            var mntId = model.MntId;
+            var transctId = model.MntTransactionId;
+            var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
+            var amount = model.MntAmount;
+            var currencyCode = model.MntCurrencyCode;
+            var subdcriberId = model.MntSubscriberId;
+            var testMode = model.MntTestMode;
+            var heshCode = model.MntHeshCode;
+
+            var checkDtataString =
+                $"{mntId}{transctId}{operationId}{amount}{currencyCode}{subdcriberId}{testMode}{heshCode}";
+
+            if (model.GetMD5(checkDtataString) != signature)
             {
                 return Content("<html><body><p>nopCommerce. Invalid order data</p></body></html>");
             }
