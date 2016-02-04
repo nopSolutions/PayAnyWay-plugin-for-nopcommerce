@@ -150,6 +150,12 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
             return model.GetMD5(checkDtataString) == signature;
         }
 
+        private ContentResult GetResponse(string textToResponse, bool success = false)
+        {
+            var msg = success ? "SUCCESS" : "FAIL";
+            return Content($"{msg}\r\nnopCommerce. {textToResponse}", "text/plain", Encoding.UTF8);
+        }
+
         [ValidateInput(false)]
         public ActionResult ConfirmPay()
         {
@@ -164,18 +170,18 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
             Guid orderGuid;
             if (!Guid.TryParse(orderId, out orderGuid))
             {
-                return Content("<html><body><p>nopCommerce. Invalid order GUID</p></body></html>");
+                return GetResponse("Invalid order GUID");
             }
 
             var order = _orderService.GetOrderByGuid(orderGuid);
             if (order == null)
             {
-                return Content("<html><body><p>nopCommerce. Order cannot be loaded</p></body></html>");
+                return GetResponse("Order cannot be loaded");
             }
             
             if (!CheckOrderData(order))
             {
-                return Content("<html><body><p>nopCommerce. Invalid order data</p></body></html>");
+                return GetResponse("Invalid order data");
             }
 
             if (_orderProcessingService.CanMarkOrderAsPaid(order))
@@ -183,7 +189,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
                 _orderProcessingService.MarkOrderAsPaid(order);
             }
 
-            return Content("<html><body><p>Your order has been paid</p></body></html>");
+            return GetResponse("Your order has been paid", true);
         }
 
 
