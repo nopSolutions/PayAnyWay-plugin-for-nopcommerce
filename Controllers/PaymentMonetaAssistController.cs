@@ -140,7 +140,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
 
             var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
-            var model = setting.CreatePaymentInfoModel(order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
+            var model = PaymentInfoModel.CreatePaymentInfoModel(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
 
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
             var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");

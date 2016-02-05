@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Mvc;
+using Nop.Core;
+using Nop.Core.Infrastructure;
+using Nop.Services.Localization;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc;
 
@@ -104,6 +108,27 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
                 return "https://www.payanyway.ru/assistant.htm";
 #endif
             }
+        }
+
+        /// <summary>
+        /// Create PaymentInfoModel by settings
+        /// </summary>
+        /// <param name="settings">Payment settings</param>
+        /// <param name="customerId">Customer id</param>
+        /// <param name="orderGuid">Order GUID</param>
+        /// <param name="orderTotal">Total sum</param>
+        public static PaymentInfoModel CreatePaymentInfoModel(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
+        {
+            return new PaymentInfoModel
+            {
+                MntId = settings.MntId,
+                MntTestMode = settings.MntTestMode ? 1 : 0,
+                MntHashcode = settings.Hashcode,
+                MntSubscriberId = customerId,
+                MntTransactionId = orderGuid.ToString(),
+                MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
+            };
+
         }
     }
 }

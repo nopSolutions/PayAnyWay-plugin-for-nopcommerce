@@ -1,10 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Nop.Core;
-using Nop.Core.Configuration;
-using Nop.Core.Infrastructure;
-using Nop.Plugin.Payments.MonetaAssist.Models;
-using Nop.Services.Localization;
+﻿using Nop.Core.Configuration;
 
 namespace Nop.Plugin.Payments.MonetaAssist
 {
@@ -34,30 +28,6 @@ namespace Nop.Plugin.Payments.MonetaAssist
         /// Additional fee
         /// </summary>
         public decimal AdditionalFee { get; set; }
-
-        /// <summary>
-        /// Create PaymentInfoModel by settings
-        /// </summary>
-        /// <param name="customerId">Customer id</param>
-        /// <param name="orderGuid">Order GUID</param>
-        /// <param name="orderTotal">Total sum</param>
-        public PaymentInfoModel CreatePaymentInfoModel(int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
-        {
-            var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
-                var workContext = EngineContext.Current.Resolve<IWorkContext>();
-
-                return new PaymentInfoModel
-                {
-                    MntId = MntId,
-                    MntTestMode = MntTestMode ? 1 : 0,
-                    MntHashcode = Hashcode,
-                    MntCurrencyCode = currencyCode,
-                    MntSubscriberId = customerId,
-                    MntTransactionId = orderGuid.ToString(),
-                    MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
-                };
-            
-        }
     }
 
 }
