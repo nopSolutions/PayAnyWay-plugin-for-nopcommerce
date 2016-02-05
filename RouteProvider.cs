@@ -8,7 +8,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
     {
         public void RegisterRoutes(RouteCollection routes)
         {
-            //ConfirmPay
+            //confirm pay
             routes.MapRoute("Plugin.Payments.MonetaAssist.ConfirmPay",
                  "Plugins/MonetaAssist/ConfirmPay",
                  new { controller = "PaymentMonetaAssist", action = "ConfirmPay" },

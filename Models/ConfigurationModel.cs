@@ -6,10 +6,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
     public class ConfigurationModel : BaseNopModel
     {
         public int ActiveStoreScopeConfiguration { get; set; }
-
-
+        
         /// <summary>
-        /// The store identifier in the MONETA.RU.
+        /// The store identifier in the MONETA.RU
         /// </summary>
         [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.MntId")]
         public string MntId { get; set; }
@@ -30,7 +29,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         public bool HashcodeOverrideForStore { get; set; }
        
         /// <summary>
-        /// Gets or sets a value indicating whether to "additional fee" is specified as percentage. true - percentage, false - fixed value.
+        /// Gets or sets a value indicating whether to "additional fee" is specified as percentage. true - percentage, false - fixed value
         /// </summary>
         [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage")]
         public bool AdditionalFeePercentage { get; set; }

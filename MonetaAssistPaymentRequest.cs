@@ -6,13 +6,10 @@ using Nop.Web.Framework;
 
 namespace Nop.Plugin.Payments.MonetaAssist
 {
-    /// <summary>
-    /// Helper class for processing payments through
-    /// </summary>
     public class MonetaAssistPaymentRequest
     {
         /// <summary>
-        /// The store identifier in the MONETA.RU.
+        /// The store identifier in the MONETA.RU
         /// </summary>
         public string MntId { get; set; }
 
@@ -28,9 +25,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public string MntTransactionId { get; set; }
 
         /// <summary>
-        /// ISO currency code.
-        /// 
-        /// Possible values: RUB, USD, EUR 
+        /// ISO currency code
         /// </summary>
         public string MntCurrencyCode { get; set; }
 
@@ -45,12 +40,12 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public string MntHashcode { get; set; }
 
         /// <summary>
-        /// Indicating that the request is made in test mode
+        /// Indicates that the request is sent in a test mode
         /// </summary>
         public int MntTestMode { get; set; }
 
         /// <summary>
-        /// Code to identify the sender and check the integrity of files. 
+        /// Code to identify the sender and check integrity of files
         /// </summary>
         public string MntSignature
         {
@@ -65,10 +60,10 @@ namespace Nop.Plugin.Payments.MonetaAssist
         }
 
         /// <summary>
-        /// Create MD5 hesh sum from string
+        /// Creates an MD5 hash sum from string
         /// </summary>
-        /// <param name="strToMD5">string to create MD5 sum</param>
-        /// <returns>MD5 hesh sum</returns>
+        /// <param name="strToMD5">String to create an MD5 hash sum</param>
+        /// <returns>MD5 hash sum</returns>
         public string GetMD5(string strToMD5)
         {
             var enc = Encoding.Default.GetEncoder();
@@ -104,14 +99,15 @@ namespace Nop.Plugin.Payments.MonetaAssist
         }
 
         /// <summary>
-        /// Create PaymentInfoModel by settings
+        /// Creates a MonetaAssistPaymentRequest
         /// </summary>
-        /// <param name="settings">Payment settings</param>
-        /// <param name="customerId">Customer id</param>
+        /// <param name="settings">Moneta.Assist payment settings</param>
+        /// <param name="customerId">Customer identifier</param>
         /// <param name="orderGuid">Order GUID</param>
         /// <param name="orderTotal">Total sum</param>
         /// <param name="currencyCode">ISO currency code</param>
-        public static MonetaAssistPaymentRequest CreateMonetaAssistPaymentRequest(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
+        public static MonetaAssistPaymentRequest CreateMonetaAssistPaymentRequest(MonetaAssistPaymentSettings settings,
+            int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
         {
             return new MonetaAssistPaymentRequest
             {

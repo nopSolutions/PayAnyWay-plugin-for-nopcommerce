@@ -85,9 +85,6 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
         private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, MonetaAssistPaymentSettings settings, Expression<Func<MonetaAssistPaymentSettings, TPropType>> keySelector)
         {
-            /* We do not clear cache after each setting update.
-             * This behavior can increase performance because cached settings will not be cleared 
-             * and loaded from database after each update */
             if (overrideForStore || storeScope == 0)
                 _settingService.SaveSetting(settings, keySelector, storeScope, false);
             else if (storeScope > 0)
@@ -112,7 +109,10 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             monetaAssistPaymentSettings.Hashcode = model.Hashcode;
             monetaAssistPaymentSettings.AdditionalFee = model.AdditionalFee;
             monetaAssistPaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
-            
+
+            /* We do not clear cache after each setting update.
+             * This behavior can increase performance because cached settings will not be cleared 
+             * and loaded from database after each update */
             UpdateSetting(storeScope, model.MntIdOverrideForStore, monetaAssistPaymentSettings, x => x.MntId);
             UpdateSetting(storeScope, model.MntTestModeOverrideForStore, monetaAssistPaymentSettings, x => x.MntTestMode);
             UpdateSetting(storeScope, model.HashcodeOverrideForStore, monetaAssistPaymentSettings, x => x.Hashcode);
@@ -199,7 +199,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             });
             _orderService.UpdateOrder(order);
 
-            //Check order data by signature
+            //check order data by signature
             if (!CheckOrderData(order, operationId, signature, currencyCode))
             {
                 return GetResponse("Invalid order data");

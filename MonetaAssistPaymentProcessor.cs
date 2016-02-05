@@ -27,6 +27,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         private readonly ICurrencyService _currencyService;
         private readonly CurrencySettings _currencySettings;
         private readonly IOrderTotalCalculationService _orderTotalCalculationService;
+
         #endregion
 
         #region Ctor
@@ -71,8 +72,8 @@ namespace Nop.Plugin.Payments.MonetaAssist
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
 
             var model = MonetaAssistPaymentRequest.CreateMonetaAssistPaymentRequest(_monetaAssistPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
-           
-            //Make and send post data
+
+            //create and send post data
             var post = new RemotePost
             {
                 FormName = "PayPoint",
@@ -272,9 +273,11 @@ namespace Nop.Plugin.Payments.MonetaAssist
             result.AddError("Recurring payment not supported");
             return result;
         }
+
         #endregion
 
         #region Properties
+
         /// <summary>
         /// Gets a value indicating whether capture is supported
         /// </summary>
