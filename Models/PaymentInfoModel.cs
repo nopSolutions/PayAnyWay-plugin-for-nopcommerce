@@ -65,7 +65,8 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
             get
             {
                 var text =
-                    $"{MntId}{MntTransactionId}{MntAmount}{MntCurrencyCode}{MntSubscriberId}{MntTestMode}{MntHashcode}";
+                    String.Format("{0}{1}{2}{3}{4}{5}{6}", MntId, MntTransactionId, MntAmount, MntCurrencyCode,
+                        MntSubscriberId, MntTestMode, MntHashcode);
 
                 return GetMD5(text);
             }
