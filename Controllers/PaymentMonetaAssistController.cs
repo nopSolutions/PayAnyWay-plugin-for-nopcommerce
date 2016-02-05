@@ -87,6 +87,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
         private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, MonetaAssistPaymentSettings settings, Expression<Func<MonetaAssistPaymentSettings, TPropType>> keySelector)
         {
+            /* We do not clear cache after each setting update.
+             * This behavior can increase performance because cached settings will not be cleared 
+             * and loaded from database after each update */
             if (overrideForStore || storeScope == 0)
                 _settingService.SaveSetting(settings, keySelector, storeScope, false);
             else if (storeScope > 0)
@@ -118,6 +121,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, monetaAssistPaymentSettings, x => x.AdditionalFee);
             UpdateSetting(storeScope, model.AdditionalFeePercentageOverrideForStore, monetaAssistPaymentSettings, x => x.AdditionalFeePercentage);
 
+            //now clear settings cache
             _settingService.ClearCache();
 
             SuccessNotification(_localizationService.GetResource("Admin.Plugins.Saved"));
@@ -133,7 +137,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
         private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
         {
+            //load settings
             var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
+
             var model = PaymentInfoModel.CreatePaymentInfoModel(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
             
             var checkDtataString =
@@ -185,6 +191,8 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             {
                 sb.AppendLine(kvp.Key + ": " + kvp.Value);
             }
+
+            //order note
             order.OrderNotes.Add(new OrderNote
             {
                 Note = sb.ToString(),
@@ -193,12 +201,13 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             });
             _orderService.UpdateOrder(order);
 
-
+            //Check order data by signature
             if (!CheckOrderData(order, operationId, signature, currencyCode))
             {
                 return GetResponse("Invalid order data");
             }
 
+            //mark order as paid
             if (_orderProcessingService.CanMarkOrderAsPaid(order))
             {
                 _orderProcessingService.MarkOrderAsPaid(order);
