@@ -110,6 +110,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         /// <param name="customerId">Customer id</param>
         /// <param name="orderGuid">Order GUID</param>
         /// <param name="orderTotal">Total sum</param>
+        /// <param name="currencyCode">ISO currency code</param>
         public static MonetaAssistPaymentRequest CreateMonetaAssistPaymentRequest(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
         {
             return new MonetaAssistPaymentRequest
