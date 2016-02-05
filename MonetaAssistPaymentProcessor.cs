@@ -174,17 +174,17 @@ namespace Nop.Plugin.Payments.MonetaAssist
 
             //locales
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId", "Store identifier");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId.Hint", "Specify the account ID of your store on the website moneta.ru (MNT_ID)");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId.Hint", "Specify the account ID of your store on the website moneta.ru (MNT_ID).");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode", "Test mode");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode.Hint", "Check to enable test mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode.Hint", "Check to enable test mode.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode", "Hashcode");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode.Hint", "Set the data integrity code");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode.Hint", "Set the data integrity code.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee", "Additional fee");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.RedirectionTip",
-                "For payment you will be redirected to the website MONETA.RU");
+                "For payment you will be redirected to the website MONETA.RU.");
 
             base.Install();
         }
