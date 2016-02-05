@@ -50,21 +50,12 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.HeshCodeOverrideForStore, model => model.HeshCode, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.HeshCode):
+                @Html.OverrideStoreCheckboxFor(model => model.HashcodeOverrideForStore, model => model.Hashcode, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.Hashcode):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.HeshCode)
-                @Html.ValidationMessageFor(model => model.HeshCode)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.MntCurrencyCodeOverrideForStore, model => model.MntCurrencyCode, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.MntCurrencyCodeValues):
-            </td>
-            <td class="adminData">
-                @Html.DropDownList("MntCurrencyCode", Model.MntCurrencyCodeValues)
+                @Html.EditorFor(model => model.Hashcode)
+                @Html.ValidationMessageFor(model => model.Hashcode)
             </td>
         </tr>
         <tr>

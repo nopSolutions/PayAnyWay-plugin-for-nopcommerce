@@ -29,15 +29,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.Hashcode")]
         public int Hashcode { get; set; }
         public bool HashcodeOverrideForStore { get; set; }
-
-        /// <summary>
-        /// ISO currency code.
-        /// </summary>
-        public int MntCurrencyCode { get; set; }
-        public bool MntCurrencyCodeOverrideForStore { get; set; }
-        [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.MntCurrencyCode")]
-        public SelectList MntCurrencyCodeValues { get; set; }
-
+       
         /// <summary>
         /// Gets or sets a value indicating whether to "additional fee" is specified as percentage. true - percentage, false - fixed value.
         /// </summary>

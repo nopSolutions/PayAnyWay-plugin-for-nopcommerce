@@ -4,10 +4,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
 using Nop.Core;
+using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Plugin.Payments.MonetaAssist.Models;
 using Nop.Services.Configuration;
+using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
@@ -29,7 +31,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
         private readonly ILogger _logger;
         private readonly PaymentSettings _paymentSettings;
         private readonly ILocalizationService _localizationService;
-        private IWebHelper _webHelper;
+        private readonly IWebHelper _webHelper;
+        private readonly ICurrencyService _currencyService;
+        private readonly CurrencySettings _currencySettings;
 
         public PaymentMonetaAssistController(IWorkContext workContext,
             IStoreService storeService, 
@@ -39,7 +43,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             IOrderProcessingService orderProcessingService, 
             ILogger logger,
             PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, IWebHelper webHelper)
+            ILocalizationService localizationService, IWebHelper webHelper, CurrencyService currencyService, CurrencySettings currencySettings)
         {
             this._workContext = workContext;
             this._storeService = storeService;
@@ -51,6 +55,8 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             this._paymentSettings = paymentSettings;
             this._localizationService = localizationService;
             this._webHelper = webHelper;
+            _currencyService = currencyService;
+            _currencySettings = currencySettings;
         }
 
         [AdminAuthorize]
@@ -66,10 +72,8 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
                 MntId = monetaAssistPaymentSettings.MntId,
                 MntTestMode = monetaAssistPaymentSettings.MntTestMode,
                 Hashcode = monetaAssistPaymentSettings.Hashcode,
-                MntCurrencyCode = Convert.ToInt32(monetaAssistPaymentSettings.MntCurrencyCode),
                 AdditionalFee = monetaAssistPaymentSettings.AdditionalFee,
                 AdditionalFeePercentage = monetaAssistPaymentSettings.AdditionalFeePercentage,
-                MntCurrencyCodeValues = monetaAssistPaymentSettings.MntCurrencyCode.ToSelectList(),
                 ActiveStoreScopeConfiguration = storeScope
             };
 
@@ -78,7 +82,6 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
                 model.MntIdOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.MntId, storeScope);
                 model.MntTestModeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.MntTestMode, storeScope);
                 model.HashcodeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.Hashcode, storeScope);
-                model.MntCurrencyCodeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.MntCurrencyCode, storeScope);
                 model.AdditionalFeeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.AdditionalFee, storeScope);
                 model.AdditionalFeePercentageOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.AdditionalFeePercentage, storeScope);
             }
@@ -108,14 +111,12 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
             //save settings
             monetaAssistPaymentSettings.MntId = model.MntId;
-            monetaAssistPaymentSettings.MntCurrencyCode = (CurrencyCodes)model.MntCurrencyCode;
             monetaAssistPaymentSettings.MntTestMode = model.MntTestMode;
             monetaAssistPaymentSettings.Hashcode = model.Hashcode;
             monetaAssistPaymentSettings.AdditionalFee = model.AdditionalFee;
             monetaAssistPaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
             
             UpdateSetting(storeScope, model.MntIdOverrideForStore, monetaAssistPaymentSettings, x => x.MntId);
-            UpdateSetting(storeScope, model.MntCurrencyCodeOverrideForStore, monetaAssistPaymentSettings, x => x.MntCurrencyCode);
             UpdateSetting(storeScope, model.MntTestModeOverrideForStore, monetaAssistPaymentSettings, x => x.MntTestMode);
             UpdateSetting(storeScope, model.HashcodeOverrideForStore, monetaAssistPaymentSettings, x => x.Hashcode);
             UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, monetaAssistPaymentSettings, x => x.AdditionalFee);
@@ -136,8 +137,10 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
         private bool CheckOrderData(Order order)
         {
+            var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
+
             var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
-            var model = setting.CreatePaymentInfoModel(order.CustomerId, order.OrderGuid, order.OrderTotal);
+            var model = setting.CreatePaymentInfoModel(order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
 
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
             var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
