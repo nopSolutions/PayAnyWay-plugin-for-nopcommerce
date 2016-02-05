@@ -15,7 +15,6 @@ using Nop.Services.Logging;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Stores;
-using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 
 namespace Nop.Plugin.Payments.MonetaAssist.Controllers
@@ -32,8 +31,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
         private readonly PaymentSettings _paymentSettings;
         private readonly ILocalizationService _localizationService;
         private readonly IWebHelper _webHelper;
-        private readonly ICurrencyService _currencyService;
-        private readonly CurrencySettings _currencySettings;
+
 
         public PaymentMonetaAssistController(IWorkContext workContext,
             IStoreService storeService, 
@@ -43,7 +41,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             IOrderProcessingService orderProcessingService, 
             ILogger logger,
             PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, IWebHelper webHelper, CurrencyService currencyService, CurrencySettings currencySettings)
+            ILocalizationService localizationService, IWebHelper webHelper, ICurrencyService currencyService, CurrencySettings currencySettings)
         {
             this._workContext = workContext;
             this._storeService = storeService;
@@ -55,8 +53,6 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             this._paymentSettings = paymentSettings;
             this._localizationService = localizationService;
             this._webHelper = webHelper;
-            _currencyService = currencyService;
-            _currencySettings = currencySettings;
         }
 
         [AdminAuthorize]
@@ -135,10 +131,8 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             return View("~/Plugins/Payments.MonetaAssist/Views/PaymentMonetaAssist/PaymentInfo.cshtml");
         }
 
-        private bool CheckOrderData(Order order, string operationId, string signature)
+        private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
         {
-            var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
-
             var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
             var model = PaymentInfoModel.CreatePaymentInfoModel(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
             
@@ -171,6 +165,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
             var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
+            var currencyCode = _webHelper.QueryString<string>("MNT_CURRENCY_CODE");
 
             Guid orderGuid;
             if (!Guid.TryParse(orderId, out orderGuid))
@@ -199,7 +194,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             _orderService.UpdateOrder(order);
 
 
-            if (!CheckOrderData(order, operationId, signature))
+            if (!CheckOrderData(order, operationId, signature, currencyCode))
             {
                 return GetResponse("Invalid order data");
             }
