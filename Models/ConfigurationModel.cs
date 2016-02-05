@@ -24,11 +24,11 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         public bool MntTestModeOverrideForStore { get; set; }
 
         /// <summary>
-        /// Hesh-code
+        /// Hashcode
         /// </summary>
         [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.HeshCode")]
-        public int HeshCode { get; set; }
-        public bool HeshCodeOverrideForStore { get; set; }
+        public int Hashcode { get; set; }
+        public bool HashcodeOverrideForStore { get; set; }
 
         /// <summary>
         /// ISO currency code.

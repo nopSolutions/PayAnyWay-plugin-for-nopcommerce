@@ -43,9 +43,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         public int MntSubscriberId { get; set; }
 
         /// <summary>
-        /// Hesh-code
+        /// Hashcode
         /// </summary>
-        public int MntHeshCode { get; set; }
+        public int MntHashcode { get; set; }
 
         /// <summary>
         /// Indicating that the request is made in test mode
@@ -61,7 +61,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
             get
             {
                 var text =
-                    $"{MntId}{MntTransactionId}{MntAmount}{MntCurrencyCode}{MntSubscriberId}{MntTestMode}{MntHeshCode}";
+                    $"{MntId}{MntTransactionId}{MntAmount}{MntCurrencyCode}{MntSubscriberId}{MntTestMode}{MntHashcode}";
 
                 return GetMD5(text);
             }

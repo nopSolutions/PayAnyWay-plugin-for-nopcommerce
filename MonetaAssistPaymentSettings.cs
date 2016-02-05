@@ -21,9 +21,9 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public bool MntTestMode { get; set; }
 
         /// <summary>
-        /// Hesh-code
+        /// Hashcode
         /// </summary>
-        public int HeshCode { get; set; }
+        public int Hashcode { get; set; }
 
         /// <summary>
         /// ISO currency code.
@@ -55,7 +55,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
                 {
                     MntId = MntId,
                     MntTestMode = MntTestMode ? 1 : 0,
-                    MntHeshCode = HeshCode,
+                    MntHashcode = Hashcode,
                     MntCurrencyCode = MntCurrencyCode.GetLocalizedEnum(localizationService, workContext).Replace(" ", ""),
                     MntSubscriberId = customerId,
                     MntTransactionId = orderGuid.ToString(),
