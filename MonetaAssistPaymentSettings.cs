@@ -17,7 +17,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         /// <summary>
         /// Hashcode
         /// </summary>
-        public int Hashcode { get; set; }
+        public string Hashcode { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to "additional fee" is specified as percentage. true - percentage, false - fixed value.

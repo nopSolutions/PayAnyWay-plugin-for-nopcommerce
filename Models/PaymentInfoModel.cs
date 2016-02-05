@@ -49,7 +49,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         /// <summary>
         /// Hashcode
         /// </summary>
-        public int MntHashcode { get; set; }
+        public string MntHashcode { get; set; }
 
         /// <summary>
         /// Indicating that the request is made in test mode
