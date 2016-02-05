@@ -119,6 +119,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
                 MntHashcode = settings.Hashcode,
                 MntSubscriberId = customerId,
                 MntTransactionId = orderGuid.ToString(),
+                MntCurrencyCode = currencyCode,
                 MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
             };
         }
