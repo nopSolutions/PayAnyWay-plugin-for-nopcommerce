@@ -134,7 +134,9 @@ namespace Nop.Plugin.Payments.MonetaAssist
 
         public bool CanRePostProcessPayment(Order order)
         {
-            return false;
+            //let's ensure that at least 5 seconds passed after order is placed
+            //P.S. there's no any particular reason for that. we just do it
+            return !((DateTime.UtcNow - order.CreatedOnUtc).TotalSeconds < 5);
         }
 
         public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
