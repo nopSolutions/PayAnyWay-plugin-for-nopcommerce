@@ -4,12 +4,10 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
 using Nop.Core;
-using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Plugin.Payments.MonetaAssist.Models;
 using Nop.Services.Configuration;
-using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
@@ -41,7 +39,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             IOrderProcessingService orderProcessingService, 
             ILogger logger,
             PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, IWebHelper webHelper, ICurrencyService currencyService, CurrencySettings currencySettings)
+            ILocalizationService localizationService, IWebHelper webHelper)
         {
             this._workContext = workContext;
             this._storeService = storeService;
