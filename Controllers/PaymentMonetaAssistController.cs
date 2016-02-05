@@ -135,18 +135,16 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             return View("~/Plugins/Payments.MonetaAssist/Views/PaymentMonetaAssist/PaymentInfo.cshtml");
         }
 
-        private bool CheckOrderData(Order order)
+        private bool CheckOrderData(Order order, string operationId, string signature)
         {
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
 
             var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
             var model = PaymentInfoModel.CreatePaymentInfoModel(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
-
-            var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
-            var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
-           
+            
             var checkDtataString =
-                $"{ model.MntId}{ model.MntTransactionId}{operationId}{model.MntAmount}{model.MntCurrencyCode}{model.MntSubscriberId}{model.MntTestMode}{model.MntHashcode}";
+                String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId,
+                    model.MntAmount, model.MntCurrencyCode, model.MntSubscriberId, model.MntTestMode, model.MntHashcode);
 
             return model.GetMD5(checkDtataString) == signature;
         }
@@ -168,6 +166,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
 
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
+            var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
+            var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
+
             Guid orderGuid;
             if (!Guid.TryParse(orderId, out orderGuid))
             {
@@ -180,7 +181,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
                 return GetResponse("Order cannot be loaded");
             }
             
-            if (!CheckOrderData(order))
+            if (!CheckOrderData(order, operationId, signature))
             {
                 return GetResponse("Invalid order data");
             }
