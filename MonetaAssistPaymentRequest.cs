@@ -9,7 +9,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
     /// <summary>
     /// Helper class for processing payments through
     /// </summary>
-    public class HelpPayment
+    public class MonetaAssistPaymentRequest
     {
         /// <summary>
         /// The store identifier in the MONETA.RU.
@@ -110,9 +110,9 @@ namespace Nop.Plugin.Payments.MonetaAssist
         /// <param name="customerId">Customer id</param>
         /// <param name="orderGuid">Order GUID</param>
         /// <param name="orderTotal">Total sum</param>
-        public static HelpPayment CreatePaymentInfoModel(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
+        public static MonetaAssistPaymentRequest CreatePaymentInfoModel(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
         {
-            return new HelpPayment
+            return new MonetaAssistPaymentRequest
             {
                 MntId = settings.MntId,
                 MntTestMode = settings.MntTestMode ? 1 : 0,
