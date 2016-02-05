@@ -209,19 +209,40 @@ namespace Nop.Plugin.Payments.MonetaAssist
         #endregion
 
         #region Properties
-        public bool SupportCapture => false;
+        public bool SupportCapture
+        {
+            get { return false; }
+        }
 
-        public bool SupportPartiallyRefund => false;
+        public bool SupportPartiallyRefund
+        {
+            get { return false; }
+        }
 
-        public bool SupportRefund => false;
+        public bool SupportRefund
+        {
+            get { return false; }
+        }
 
-        public bool SupportVoid => false;
+        public bool SupportVoid
+        {
+            get { return false; }
+        }
 
-        public RecurringPaymentType RecurringPaymentType => RecurringPaymentType.NotSupported;
+        public RecurringPaymentType RecurringPaymentType
+        {
+            get { return RecurringPaymentType.NotSupported; }
+        }
 
-        public PaymentMethodType PaymentMethodType => PaymentMethodType.Redirection;
+        public PaymentMethodType PaymentMethodType
+        {
+            get { return PaymentMethodType.Redirection; }
+        }
 
-        public bool SkipPaymentInfo => false;
+        public bool SkipPaymentInfo
+        {
+            get { return false; }
+        }
 
         #endregion
     }
