@@ -152,6 +152,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
         private ContentResult GetResponse(string textToResponse, bool success = false)
         {
             var msg = success ? "SUCCESS" : "FAIL";
+            if(!success)
+                _logger.Error(textToResponse);
+           
             return Content(String.Format("{0}\r\nnopCommerce. {1}", msg, textToResponse), "text/plain", Encoding.UTF8);
         }
 
