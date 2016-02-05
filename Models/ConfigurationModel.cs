@@ -26,7 +26,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         /// <summary>
         /// Hashcode
         /// </summary>
-        [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.HeshCode")]
+        [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.Hashcode")]
         public int Hashcode { get; set; }
         public bool HashcodeOverrideForStore { get; set; }
 

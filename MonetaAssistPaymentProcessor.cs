@@ -163,12 +163,14 @@ namespace Nop.Plugin.Payments.MonetaAssist
             _settingService.SaveSetting(settings);
 
             //locales
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Amount", "Amount");
+
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId", "Store identifier");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode", "Is made in test mode");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.HeshCode", "Hesh-code");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntCurrencyCode", "ISO currency code");
-           
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId.Hint", "Specify the account ID of your store on the website moneta.ru (MNT_ID)");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode", "Test mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode.Hint", "Check to enable test mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode", "Hashcode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode.Hint", "Set the data integrity code");
+            
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee", "Additional fee");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
@@ -184,12 +186,14 @@ namespace Nop.Plugin.Payments.MonetaAssist
         {
             _settingService.DeleteSetting<MonetaAssistPaymentSettings>();
 
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Amount");
             this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId");
             this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.HeshCode");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntCurrencyCode");
-    
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode");
+
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode.Hint");
+
             this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee");
             this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage");
