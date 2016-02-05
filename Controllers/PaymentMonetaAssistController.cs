@@ -180,7 +180,22 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             {
                 return GetResponse("Order cannot be loaded");
             }
-            
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Moneta.Assist:");
+            foreach (KeyValuePair<string, string> kvp in HttpContext.Request.QueryString)
+            {
+                sb.AppendLine(kvp.Key + ": " + kvp.Value);
+            }
+            order.OrderNotes.Add(new OrderNote
+            {
+                Note = sb.ToString(),
+                DisplayToCustomer = false,
+                CreatedOnUtc = DateTime.UtcNow
+            });
+            _orderService.UpdateOrder(order);
+
+
             if (!CheckOrderData(order, operationId, signature))
             {
                 return GetResponse("Invalid order data");
