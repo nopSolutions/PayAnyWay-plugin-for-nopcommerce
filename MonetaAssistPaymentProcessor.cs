@@ -70,7 +70,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
 
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
 
-            var model = MonetaAssistPaymentRequest.CreatePaymentInfoModel(_monetaAssistPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
+            var model = MonetaAssistPaymentRequest.CreateMonetaAssistPaymentRequest(_monetaAssistPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
            
             //Make and send post data
             var post = new RemotePost
