@@ -1,8 +1,7 @@
 ﻿@{
     Layout = "";
 }
-@model ConfigurationModel
-@using Nop.Plugin.Payments.MonetaDirect.Models;
+@model Nop.Plugin.Payments.MonetaAssist.Models.ConfigurationModel
 @using Nop.Web.Framework;
 @Html.Action("StoreScopeConfiguration", "Setting", new { area = "Admin" })
 @using (Html.BeginForm())
@@ -15,7 +14,13 @@
                     Instructions on setting up a account in the payment system see the link
                     <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="MONETA.Assistant">MONETA.Assistant</a>
                     on page eight.
-                </h2><br/>
+                </h2>
+                <h2 style="color: red;">
+                    Definitely need the Pay URL field to specify the address http://www.yourStore.com/Plugins/MonetaAssist/ConfirmPay.
+                    <br/>
+                    HTTP Method field should be GET.
+                </h2>
+                <br/>
             </td>
         </tr>
         <tr>

@@ -1,4 +1,4 @@
-﻿namespace Nop.Plugin.Payments.MonetaDirect
+﻿namespace Nop.Plugin.Payments.MonetaAssist
 {
     /// <summary>
     /// Supported ISO currency code

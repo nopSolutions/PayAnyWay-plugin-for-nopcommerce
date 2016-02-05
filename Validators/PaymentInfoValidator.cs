@@ -1,8 +1,8 @@
-﻿using Nop.Plugin.Payments.MonetaDirect.Models;
+﻿using Nop.Plugin.Payments.MonetaAssist.Models;
 using Nop.Services.Localization;
 using Nop.Web.Framework.Validators;
 
-namespace Nop.Plugin.Payments.MonetaDirect.Validators
+namespace Nop.Plugin.Payments.MonetaAssist.Validators
 {
     public class PaymentInfoValidator : BaseNopValidator<PaymentInfoModel>
     {

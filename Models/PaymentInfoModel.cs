@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc;
 
-namespace Nop.Plugin.Payments.MonetaDirect.Models
+namespace Nop.Plugin.Payments.MonetaAssist.Models
 {
     public class PaymentInfoModel : BaseNopModel
     {
@@ -19,7 +19,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Models
         /// Amount
         /// </summary>
         [AllowHtml]
-        [NopResourceDisplayName("Plugins.Payments.MonetaDirect.Fields.Amount")]
+        [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.Amount")]
         public string MntAmount { get; set; }
 
         /// <summary>

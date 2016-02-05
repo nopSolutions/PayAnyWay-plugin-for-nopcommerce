@@ -1,8 +1,8 @@
 ﻿Group: Payment methods
 FriendlyName: Монета.Ру
-SystemName: Payments.MonetaDirect
+SystemName: Payments.MonetaAssist
 Version: 1.00
 SupportedVersions: 3.70
 Author: nopCommerce team
 DisplayOrder: 1
-FileName: Nop.Plugin.Payments.MonetaDirect.dll
+FileName: Nop.Plugin.Payments.MonetaAssist.dll

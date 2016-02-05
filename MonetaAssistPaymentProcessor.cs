@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Web.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Plugins;
-using Nop.Plugin.Payments.MonetaDirect.Controllers;
+using Nop.Plugin.Payments.MonetaAssist.Controllers;
 using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -16,14 +15,14 @@ using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Web.Framework;
 
-namespace Nop.Plugin.Payments.MonetaDirect
+namespace Nop.Plugin.Payments.MonetaAssist
 {
 
-    public class MonetaDirectPaymentProcessor : BasePlugin, IPaymentMethod
+    public class MonetaAssistPaymentProcessor : BasePlugin, IPaymentMethod
     {
         #region Fields
 
-        private readonly MonetaDirectPaymentSettings _monetaDirectPaymentSettings;
+        private readonly MonetaAssistPaymentSettings _monetaAssistPaymentSettings;
         private readonly ISettingService _settingService;
         private readonly ICurrencyService _currencyService;
         private readonly ICustomerService _customerService;
@@ -34,13 +33,13 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         #region Ctor
 
-        public MonetaDirectPaymentProcessor(MonetaDirectPaymentSettings monetaDirectPaymentSettings,
+        public MonetaAssistPaymentProcessor(MonetaAssistPaymentSettings monetaAssistPaymentSettings,
             ISettingService settingService,
             ICurrencyService currencyService, ICustomerService customerService,
             CurrencySettings currencySettings, IWebHelper webHelper,
             IOrderTotalCalculationService orderTotalCalculationService)
         {
-            this._monetaDirectPaymentSettings = monetaDirectPaymentSettings;
+            this._monetaAssistPaymentSettings = monetaAssistPaymentSettings;
             this._settingService = settingService;
             this._currencyService = currencyService;
             this._customerService = customerService;
@@ -64,7 +63,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
             var orderGuid = postProcessPaymentRequest.Order.OrderGuid;
             var orderTotal = postProcessPaymentRequest.Order.OrderTotal;
 
-            var model = _monetaDirectPaymentSettings.CreatePaymentInfoModel(customerId, orderGuid, orderTotal);
+            var model = _monetaAssistPaymentSettings.CreatePaymentInfoModel(customerId, orderGuid, orderTotal);
            
             var post = new RemotePost
             {
@@ -89,7 +88,7 @@ namespace Nop.Plugin.Payments.MonetaDirect
         public decimal GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
         {
             var result = this.CalculateAdditionalFee(_orderTotalCalculationService, cart,
-                _monetaDirectPaymentSettings.AdditionalFee, _monetaDirectPaymentSettings.AdditionalFeePercentage);
+                _monetaAssistPaymentSettings.AdditionalFee, _monetaAssistPaymentSettings.AdditionalFeePercentage);
             return result;
         }
 
@@ -138,44 +137,44 @@ namespace Nop.Plugin.Payments.MonetaDirect
         public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
         {
             actionName = "Configure";
-            controllerName = "PaymentMonetaDirect";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaDirect.Controllers" }, { "area", null } };
+            controllerName = "PaymentMonetaAssist";
+            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaAssist.Controllers" }, { "area", null } };
         }
 
         public void GetPaymentInfoRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
         {
             actionName = "PaymentInfo";
-            controllerName = "PaymentMonetaDirect";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaDirect.Controllers" }, { "area", null } };
+            controllerName = "PaymentMonetaAssist";
+            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaAssist.Controllers" }, { "area", null } };
         }
 
         public Type GetControllerType()
         {
-            return typeof(PaymentMonetaDirectController);
+            return typeof(PaymentMonetaAssistController);
         }
  
         public override void Install()
         {
             //settings
-            var settings = new MonetaDirectPaymentSettings
+            var settings = new MonetaAssistPaymentSettings
             {
                 MntTestMode = true,
             };
             _settingService.SaveSetting(settings);
 
             //locales
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.Amount", "Amount");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntId", "Store identifier");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntTestMode", "Is made in test mode");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.HeshCode", "Hesh-code");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntCurrencyCode", "ISO currency code");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Amount", "Amount");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId", "Store identifier");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode", "Is made in test mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.HeshCode", "Hesh-code");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntCurrencyCode", "ISO currency code");
            
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee", "Additional fee");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee", "Additional fee");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
 
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.RedirectionTip",
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.RedirectionTip",
                 "For payment you will be redirected to the website MONETA.RU");
 
             base.Install();
@@ -183,20 +182,20 @@ namespace Nop.Plugin.Payments.MonetaDirect
 
         public override void Uninstall()
         {
-            _settingService.DeleteSetting<MonetaDirectPaymentSettings>();
+            _settingService.DeleteSetting<MonetaAssistPaymentSettings>();
 
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.Amount");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntId");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntTestMode");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.HeshCode");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.MntCurrencyCode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Amount");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.HeshCode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntCurrencyCode");
     
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFee.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.AdditionalFeePercentage.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage.Hint");
 
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaDirect.Fields.RedirectionTip");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.RedirectionTip");
 
             base.Uninstall();
         }

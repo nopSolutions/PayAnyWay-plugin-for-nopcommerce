@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
-using Nop.Plugin.Payments.MonetaDirect.Models;
+using Nop.Plugin.Payments.MonetaAssist.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -18,9 +16,9 @@ using Nop.Services.Stores;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 
-namespace Nop.Plugin.Payments.MonetaDirect.Controllers
+namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 {
-    public class PaymentMonetaDirectController : BasePaymentController
+    public class PaymentMonetaAssistController : BasePaymentController
     {
         private readonly IWorkContext _workContext;
         private readonly IStoreService _storeService;
@@ -33,7 +31,7 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
         private readonly ILocalizationService _localizationService;
         private IWebHelper _webHelper;
 
-        public PaymentMonetaDirectController(IWorkContext workContext,
+        public PaymentMonetaAssistController(IWorkContext workContext,
             IStoreService storeService, 
             ISettingService settingService, 
             IPaymentService paymentService, 
@@ -61,34 +59,34 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
         {
             //load settings for a chosen store scope
             var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
-            var monetaDirectPaymentSettings = _settingService.LoadSetting<MonetaDirectPaymentSettings>(storeScope);
+            var monetaAssistPaymentSettings = _settingService.LoadSetting<MonetaAssistPaymentSettings>(storeScope);
 
             var model = new ConfigurationModel
             {
-                MntId = monetaDirectPaymentSettings.MntId,
-                MntTestMode = monetaDirectPaymentSettings.MntTestMode,
-                HeshCode = monetaDirectPaymentSettings.HeshCode,
-                MntCurrencyCode = Convert.ToInt32(monetaDirectPaymentSettings.MntCurrencyCode),
-                AdditionalFee = monetaDirectPaymentSettings.AdditionalFee,
-                AdditionalFeePercentage = monetaDirectPaymentSettings.AdditionalFeePercentage,
-                MntCurrencyCodeValues = monetaDirectPaymentSettings.MntCurrencyCode.ToSelectList(),
+                MntId = monetaAssistPaymentSettings.MntId,
+                MntTestMode = monetaAssistPaymentSettings.MntTestMode,
+                HeshCode = monetaAssistPaymentSettings.HeshCode,
+                MntCurrencyCode = Convert.ToInt32(monetaAssistPaymentSettings.MntCurrencyCode),
+                AdditionalFee = monetaAssistPaymentSettings.AdditionalFee,
+                AdditionalFeePercentage = monetaAssistPaymentSettings.AdditionalFeePercentage,
+                MntCurrencyCodeValues = monetaAssistPaymentSettings.MntCurrencyCode.ToSelectList(),
                 ActiveStoreScopeConfiguration = storeScope
             };
 
             if (storeScope > 0)
             {
-                model.MntIdOverrideForStore = _settingService.SettingExists(monetaDirectPaymentSettings, x => x.MntId, storeScope);
-                model.MntTestModeOverrideForStore = _settingService.SettingExists(monetaDirectPaymentSettings, x => x.MntTestMode, storeScope);
-                model.HeshCodeOverrideForStore = _settingService.SettingExists(monetaDirectPaymentSettings, x => x.HeshCode, storeScope);
-                model.MntCurrencyCodeOverrideForStore = _settingService.SettingExists(monetaDirectPaymentSettings, x => x.MntCurrencyCode, storeScope);
-                model.AdditionalFeeOverrideForStore = _settingService.SettingExists(monetaDirectPaymentSettings, x => x.AdditionalFee, storeScope);
-                model.AdditionalFeePercentageOverrideForStore = _settingService.SettingExists(monetaDirectPaymentSettings, x => x.AdditionalFeePercentage, storeScope);
+                model.MntIdOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.MntId, storeScope);
+                model.MntTestModeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.MntTestMode, storeScope);
+                model.HeshCodeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.HeshCode, storeScope);
+                model.MntCurrencyCodeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.MntCurrencyCode, storeScope);
+                model.AdditionalFeeOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.AdditionalFee, storeScope);
+                model.AdditionalFeePercentageOverrideForStore = _settingService.SettingExists(monetaAssistPaymentSettings, x => x.AdditionalFeePercentage, storeScope);
             }
 
-            return View("~/Plugins/Payments.MonetaDirect/Views/PaymentMonetaDirect/Configure.cshtml", model);
+            return View("~/Plugins/Payments.MonetaAssist/Views/PaymentMonetaAssist/Configure.cshtml", model);
         }
 
-        private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, MonetaDirectPaymentSettings settings, Expression<Func<MonetaDirectPaymentSettings, TPropType>> keySelector)
+        private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, MonetaAssistPaymentSettings settings, Expression<Func<MonetaAssistPaymentSettings, TPropType>> keySelector)
         {
             if (overrideForStore || storeScope == 0)
                 _settingService.SaveSetting(settings, keySelector, storeScope, false);
@@ -106,22 +104,22 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
 
             //load settings for a chosen store scope
             var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
-            var monetaDirectPaymentSettings = _settingService.LoadSetting<MonetaDirectPaymentSettings>(storeScope);
+            var monetaAssistPaymentSettings = _settingService.LoadSetting<MonetaAssistPaymentSettings>(storeScope);
 
             //save settings
-            monetaDirectPaymentSettings.MntId = model.MntId;
-            monetaDirectPaymentSettings.MntCurrencyCode = (CurrencyCodes)model.MntCurrencyCode;
-            monetaDirectPaymentSettings.MntTestMode = model.MntTestMode;
-            monetaDirectPaymentSettings.HeshCode = model.HeshCode;
-            monetaDirectPaymentSettings.AdditionalFee = model.AdditionalFee;
-            monetaDirectPaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
+            monetaAssistPaymentSettings.MntId = model.MntId;
+            monetaAssistPaymentSettings.MntCurrencyCode = (CurrencyCodes)model.MntCurrencyCode;
+            monetaAssistPaymentSettings.MntTestMode = model.MntTestMode;
+            monetaAssistPaymentSettings.HeshCode = model.HeshCode;
+            monetaAssistPaymentSettings.AdditionalFee = model.AdditionalFee;
+            monetaAssistPaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
             
-            UpdateSetting(storeScope, model.MntIdOverrideForStore, monetaDirectPaymentSettings, x => x.MntId);
-            UpdateSetting(storeScope, model.MntCurrencyCodeOverrideForStore, monetaDirectPaymentSettings, x => x.MntCurrencyCode);
-            UpdateSetting(storeScope, model.MntTestModeOverrideForStore, monetaDirectPaymentSettings, x => x.MntTestMode);
-            UpdateSetting(storeScope, model.HeshCodeOverrideForStore, monetaDirectPaymentSettings, x => x.HeshCode);
-            UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, monetaDirectPaymentSettings, x => x.AdditionalFee);
-            UpdateSetting(storeScope, model.AdditionalFeePercentageOverrideForStore, monetaDirectPaymentSettings, x => x.AdditionalFeePercentage);
+            UpdateSetting(storeScope, model.MntIdOverrideForStore, monetaAssistPaymentSettings, x => x.MntId);
+            UpdateSetting(storeScope, model.MntCurrencyCodeOverrideForStore, monetaAssistPaymentSettings, x => x.MntCurrencyCode);
+            UpdateSetting(storeScope, model.MntTestModeOverrideForStore, monetaAssistPaymentSettings, x => x.MntTestMode);
+            UpdateSetting(storeScope, model.HeshCodeOverrideForStore, monetaAssistPaymentSettings, x => x.HeshCode);
+            UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, monetaAssistPaymentSettings, x => x.AdditionalFee);
+            UpdateSetting(storeScope, model.AdditionalFeePercentageOverrideForStore, monetaAssistPaymentSettings, x => x.AdditionalFeePercentage);
 
             _settingService.ClearCache();
 
@@ -133,12 +131,12 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
         [ChildActionOnly]
         public ActionResult PaymentInfo()
         {
-            return View("~/Plugins/Payments.MonetaDirect/Views/PaymentMonetaDirect/PaymentInfo.cshtml");
+            return View("~/Plugins/Payments.MonetaAssist/Views/PaymentMonetaAssist/PaymentInfo.cshtml");
         }
 
         private bool CheckOrderData(Order order)
         {
-            var setting = _settingService.LoadSetting<MonetaDirectPaymentSettings>();
+            var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
             var model = setting.CreatePaymentInfoModel(order.CustomerId, order.OrderGuid, order.OrderTotal);
 
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
@@ -160,10 +158,10 @@ namespace Nop.Plugin.Payments.MonetaDirect.Controllers
         public ActionResult ConfirmPay()
         {
             var processor =
-                _paymentService.LoadPaymentMethodBySystemName("Payments.MonetaDirect") as MonetaDirectPaymentProcessor;
+                _paymentService.LoadPaymentMethodBySystemName("Payments.MonetaAssist") as MonetaAssistPaymentProcessor;
             if (processor == null ||
                 !processor.IsPaymentMethodActive(_paymentSettings) || !processor.PluginDescriptor.Installed)
-                throw new NopException("MonetaDirect module cannot be loaded");
+                throw new NopException("MonetaAssist module cannot be loaded");
 
 
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Globalization;
-using Nop.Core.Configuration;
 using Nop.Core;
+using Nop.Core.Configuration;
 using Nop.Core.Infrastructure;
-using Nop.Plugin.Payments.MonetaDirect.Models;
+using Nop.Plugin.Payments.MonetaAssist.Models;
 using Nop.Services.Localization;
 
-namespace Nop.Plugin.Payments.MonetaDirect
+namespace Nop.Plugin.Payments.MonetaAssist
 {
-    public class MonetaDirectPaymentSettings : ISettings
+    public class MonetaAssistPaymentSettings : ISettings
     {
         /// <summary>
         /// The store identifier in the MONETA.RU.

@@ -2,17 +2,17 @@
 using System.Web.Routing;
 using Nop.Web.Framework.Mvc.Routes;
 
-namespace Nop.Plugin.Payments.MonetaDirect
+namespace Nop.Plugin.Payments.MonetaAssist
 {
     public partial class RouteProvider : IRouteProvider
     {
         public void RegisterRoutes(RouteCollection routes)
         {
             //ConfirmPay
-            routes.MapRoute("Plugin.Payments.MonetaDirect.ConfirmPay",
-                 "Plugins/MonetaDirect/ConfirmPay",
-                 new { controller = "PaymentMonetaDirect", action = "ConfirmPay" },
-                 new[] { "Nop.Plugin.Payments.MonetaDirect.Controllers" }
+            routes.MapRoute("Plugin.Payments.MonetaAssist.ConfirmPay",
+                 "Plugins/MonetaAssist/ConfirmPay",
+                 new { controller = "PaymentMonetaAssist", action = "ConfirmPay" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
             );
         }
         public int Priority
