@@ -140,7 +140,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             //load settings
             var setting = _settingService.LoadSetting<MonetaAssistPaymentSettings>();
 
-            var model = PaymentInfoModel.CreatePaymentInfoModel(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
+            var model = HelpPayment.CreatePaymentInfoModel(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
             
             var checkDtataString =
                 String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId,

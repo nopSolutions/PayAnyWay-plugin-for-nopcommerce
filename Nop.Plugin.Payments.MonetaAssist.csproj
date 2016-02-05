@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="Controllers\PaymentMonetaAssistController.cs" />
     <Compile Include="Models\ConfigurationModel.cs" />
-    <Compile Include="Models\PaymentInfoModel.cs" />
+    <Compile Include="PaymentInfoModel.cs" />
     <Compile Include="MonetaAssistPaymentProcessor.cs" />
     <Compile Include="MonetaAssistPaymentSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,7 +6,6 @@ using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Plugins;
 using Nop.Plugin.Payments.MonetaAssist.Controllers;
-using Nop.Plugin.Payments.MonetaAssist.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
@@ -71,7 +70,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
 
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
 
-            var model = PaymentInfoModel.CreatePaymentInfoModel(_monetaAssistPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
+            var model = HelpPayment.CreatePaymentInfoModel(_monetaAssistPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
            
             //Make and send post data
             var post = new RemotePost

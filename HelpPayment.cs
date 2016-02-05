@@ -2,34 +2,29 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web.Mvc;
-using Nop.Core;
-using Nop.Core.Infrastructure;
-using Nop.Services.Localization;
 using Nop.Web.Framework;
-using Nop.Web.Framework.Mvc;
 
-namespace Nop.Plugin.Payments.MonetaAssist.Models
+namespace Nop.Plugin.Payments.MonetaAssist
 {
-    public class PaymentInfoModel : BaseNopModel
+    /// <summary>
+    /// Helper class for processing payments through
+    /// </summary>
+    public class HelpPayment
     {
         /// <summary>
         /// The store identifier in the MONETA.RU.
         /// </summary>
-        [AllowHtml]
         public string MntId { get; set; }
 
         /// <summary>
         /// Amount
         /// </summary>
-        [AllowHtml]
         [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.Amount")]
         public string MntAmount { get; set; }
 
         /// <summary>
         /// Order GUID
         /// </summary>
-        [AllowHtml]
         public string MntTransactionId { get; set; }
 
         /// <summary>
@@ -37,13 +32,11 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         /// 
         /// Possible values: RUB, USD, EUR 
         /// </summary>
-        [AllowHtml]
         public string MntCurrencyCode { get; set; }
 
         /// <summary>
         /// Customer id
         /// </summary>
-        [AllowHtml]
         public int MntSubscriberId { get; set; }
 
         /// <summary>
@@ -59,7 +52,6 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         /// <summary>
         /// Code to identify the sender and check the integrity of files. 
         /// </summary>
-        [AllowHtml]
         public string MntSignature
         {
             get
@@ -118,9 +110,9 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
         /// <param name="customerId">Customer id</param>
         /// <param name="orderGuid">Order GUID</param>
         /// <param name="orderTotal">Total sum</param>
-        public static PaymentInfoModel CreatePaymentInfoModel(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
+        public static HelpPayment CreatePaymentInfoModel(MonetaAssistPaymentSettings settings, int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
         {
-            return new PaymentInfoModel
+            return new HelpPayment
             {
                 MntId = settings.MntId,
                 MntTestMode = settings.MntTestMode ? 1 : 0,
@@ -129,7 +121,6 @@ namespace Nop.Plugin.Payments.MonetaAssist.Models
                 MntTransactionId = orderGuid.ToString(),
                 MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
             };
-
         }
     }
 }
