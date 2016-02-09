@@ -89,10 +89,9 @@ namespace Nop.Plugin.Payments.MonetaAssist
             post.Add("MNT_TEST_MODE", model.MntTestMode.ToString());
             post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId.ToString());
             post.Add("MNT_SIGNATURE", model.MntSignature);
-            var failUrl = String.Format("{0}/{1}", _storeContext.CurrentStore.Url.TrimEnd(new[] {'\\'}),
-                "Plugins/MonetaAssist/CancelOrder");
-            var succesUrl = String.Format("{0}/{1}", _storeContext.CurrentStore.Url.TrimEnd(new[] { '\\' }),
-    "Plugins/MonetaAssist/Succes");
+            var siteUrl = _storeContext.CurrentStore.Url.TrimEnd('\\');
+            var failUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssist/CancelOrder");
+            var succesUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssist/Succes");
             post.Add("MNT_FAIL_URL", failUrl);
             post.Add("MNT_SUCCESS_URL", succesUrl);
 
