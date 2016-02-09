@@ -7,8 +7,8 @@
     <ProjectGuid>{24EDD771-1B41-4394-B96C-D17BDB459C5F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nop.Plugin.Payments.MonetaAssist</RootNamespace>
-    <AssemblyName>Nop.Plugin.Payments.MonetaAssist</AssemblyName>
+    <RootNamespace>Nop.Plugin.Payments.MonetaAssistant</RootNamespace>
+    <AssemblyName>Nop.Plugin.Payments.MonetaAssistant</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.MonetaAssist\</OutputPath>
+    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.MonetaAssistant\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -48,11 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\PaymentMonetaAssistController.cs" />
+    <Compile Include="Controllers\PaymentMonetaAssistantController.cs" />
     <Compile Include="Models\ConfigurationModel.cs" />
-    <Compile Include="MonetaAssistPaymentRequest.cs" />
-    <Compile Include="MonetaAssistPaymentProcessor.cs" />
-    <Compile Include="MonetaAssistPaymentSettings.cs" />
+    <Compile Include="MonetaAssistantPaymentRequest.cs" />
+    <Compile Include="MonetaAssistantPaymentProcessor.cs" />
+    <Compile Include="MonetaAssistantPaymentSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteProvider.cs" />
   </ItemGroup>
@@ -85,12 +85,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\PaymentMonetaAssist\Configure.cshtml">
+    <Content Include="Views\PaymentMonetaAssistant\Configure.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\PaymentMonetaAssist\PaymentInfo.cshtml">
+    <Content Include="Views\PaymentMonetaAssistant\PaymentInfo.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

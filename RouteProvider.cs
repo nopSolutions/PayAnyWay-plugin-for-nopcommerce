@@ -2,29 +2,29 @@
 using System.Web.Routing;
 using Nop.Web.Framework.Mvc.Routes;
 
-namespace Nop.Plugin.Payments.MonetaAssist
+namespace Nop.Plugin.Payments.MonetaAssistant
 {
     public partial class RouteProvider : IRouteProvider
     {
         public void RegisterRoutes(RouteCollection routes)
         {
             //confirm pay
-            routes.MapRoute("Plugin.Payments.MonetaAssist.ConfirmPay",
-                 "Plugins/MonetaAssist/ConfirmPay",
-                 new { controller = "PaymentMonetaAssist", action = "ConfirmPay" },
-                 new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
+            routes.MapRoute("Plugin.Payments.MonetaAssistant.ConfirmPay",
+                 "Plugins/MonetaAssistant/ConfirmPay",
+                 new { controller = "PaymentMonetaAssistant", action = "ConfirmPay" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
             //Cancel
-            routes.MapRoute("Plugin.Payments.MonetaAssist.CancelOrder",
-                 "Plugins/MonetaAssist/CancelOrder",
-                 new { controller = "PaymentMonetaAssist", action = "CancelOrder" },
-                 new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
+            routes.MapRoute("Plugin.Payments.MonetaAssistant.CancelOrder",
+                 "Plugins/MonetaAssistant/CancelOrder",
+                 new { controller = "PaymentMonetaAssistant", action = "CancelOrder" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
             //Succes
-            routes.MapRoute("Plugin.Payments.MonetaAssist.Succes",
-                 "Plugins/MonetaAssist/Succes",
-                 new { controller = "PaymentMonetaAssist", action = "Succes" },
-                 new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
+            routes.MapRoute("Plugin.Payments.MonetaAssistant.Succes",
+                 "Plugins/MonetaAssistant/Succes",
+                 new { controller = "PaymentMonetaAssistant", action = "Succes" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
         }
         public int Priority

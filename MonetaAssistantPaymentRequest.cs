@@ -4,9 +4,9 @@ using System.Security.Cryptography;
 using System.Text;
 using Nop.Web.Framework;
 
-namespace Nop.Plugin.Payments.MonetaAssist
+namespace Nop.Plugin.Payments.MonetaAssistant
 {
-    public class MonetaAssistPaymentRequest
+    public class MonetaAssistantPaymentRequest
     {
         /// <summary>
         /// The store identifier in the MONETA.RU
@@ -16,7 +16,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         /// <summary>
         /// Amount
         /// </summary>
-        [NopResourceDisplayName("Plugins.Payments.MonetaAssist.Fields.Amount")]
+        [NopResourceDisplayName("Plugins.Payments.MonetaAssistant.Fields.Amount")]
         public string MntAmount { get; set; }
 
         /// <summary>
@@ -82,34 +82,34 @@ namespace Nop.Plugin.Payments.MonetaAssist
         }
 
         /// <summary>
-        /// MONETA.Assistant url
+        /// MONETA.Assistantant url
         /// </summary>
-        public string MonetaAssistantUrl
+        public string MonetaAssistantantUrl
         {
             get
             {
 #if DEBUG
-                return "https://demo.moneta.ru/assistant.htm";
+                return "https://demo.moneta.ru/Assistantant.htm";
 #endif
 
 #if !DEBUG
-                return "https://www.payanyway.ru/assistant.htm";
+                return "https://www.payanyway.ru/Assistantant.htm";
 #endif
             }
         }
 
         /// <summary>
-        /// Creates a MonetaAssistPaymentRequest
+        /// Creates a MonetaAssistantPaymentRequest
         /// </summary>
-        /// <param name="settings">Moneta.Assist payment settings</param>
+        /// <param name="settings">Moneta.Assistant payment settings</param>
         /// <param name="customerId">Customer identifier</param>
         /// <param name="orderGuid">Order GUID</param>
         /// <param name="orderTotal">Total sum</param>
         /// <param name="currencyCode">ISO currency code</param>
-        public static MonetaAssistPaymentRequest CreateMonetaAssistPaymentRequest(MonetaAssistPaymentSettings settings,
+        public static MonetaAssistantPaymentRequest CreateMonetaAssistantPaymentRequest(MonetaAssistantPaymentSettings settings,
             int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
         {
-            return new MonetaAssistPaymentRequest
+            return new MonetaAssistantPaymentRequest
             {
                 MntId = settings.MntId,
                 MntTestMode = settings.MntTestMode ? 1 : 0,

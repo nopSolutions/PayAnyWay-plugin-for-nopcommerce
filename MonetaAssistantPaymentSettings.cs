@@ -1,8 +1,8 @@
 ﻿using Nop.Core.Configuration;
 
-namespace Nop.Plugin.Payments.MonetaAssist
+namespace Nop.Plugin.Payments.MonetaAssistant
 {
-    public class MonetaAssistPaymentSettings : ISettings
+    public class MonetaAssistantPaymentSettings : ISettings
     {
         /// <summary>
         /// The store identifier in the MONETA.RU

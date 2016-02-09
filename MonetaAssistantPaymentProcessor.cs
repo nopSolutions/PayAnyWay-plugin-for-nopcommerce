@@ -6,7 +6,7 @@ using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Plugins;
-using Nop.Plugin.Payments.MonetaAssist.Controllers;
+using Nop.Plugin.Payments.MonetaAssistant.Controllers;
 using Nop.Services.Configuration;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
@@ -14,16 +14,16 @@ using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Web.Framework;
 
-namespace Nop.Plugin.Payments.MonetaAssist
+namespace Nop.Plugin.Payments.MonetaAssistant
 {
     /// <summary>
-    /// Moneta.Assistent payment method
+    /// Moneta.Assistantent payment method
     /// </summary>
-    public class MonetaAssistPaymentProcessor : BasePlugin, IPaymentMethod
+    public class MonetaAssistantPaymentProcessor : BasePlugin, IPaymentMethod
     {
         #region Fields
 
-        private readonly MonetaAssistPaymentSettings _monetaAssistPaymentSettings;
+        private readonly MonetaAssistantPaymentSettings _monetaAssistantPaymentSettings;
         private readonly ISettingService _settingService;
         private readonly ICurrencyService _currencyService;
         private readonly CurrencySettings _currencySettings;
@@ -34,13 +34,13 @@ namespace Nop.Plugin.Payments.MonetaAssist
 
         #region Ctor
 
-        public MonetaAssistPaymentProcessor(MonetaAssistPaymentSettings monetaAssistPaymentSettings,
+        public MonetaAssistantPaymentProcessor(MonetaAssistantPaymentSettings monetaAssistantPaymentSettings,
             ISettingService settingService,
             ICurrencyService currencyService,
             CurrencySettings currencySettings,
             IOrderTotalCalculationService orderTotalCalculationService, IStoreContext storeContext)
         {
-            this._monetaAssistPaymentSettings = monetaAssistPaymentSettings;
+            this._monetaAssistantPaymentSettings = monetaAssistantPaymentSettings;
             this._settingService = settingService;
             this._currencyService = currencyService;
             this._currencySettings = currencySettings;
@@ -74,13 +74,13 @@ namespace Nop.Plugin.Payments.MonetaAssist
 
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
 
-            var model = MonetaAssistPaymentRequest.CreateMonetaAssistPaymentRequest(_monetaAssistPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
+            var model = MonetaAssistantPaymentRequest.CreateMonetaAssistantPaymentRequest(_monetaAssistantPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
 
             //create and send post data
             var post = new RemotePost
             {
                 FormName = "PayPoint",
-                Url = model.MonetaAssistantUrl
+                Url = model.MonetaAssistantantUrl
             };
             post.Add("MNT_ID", model.MntId);
             post.Add("MNT_TRANSACTION_ID", model.MntTransactionId);
@@ -89,9 +89,9 @@ namespace Nop.Plugin.Payments.MonetaAssist
             post.Add("MNT_TEST_MODE", model.MntTestMode.ToString());
             post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId.ToString());
             post.Add("MNT_SIGNATURE", model.MntSignature);
-            var siteUrl = _storeContext.CurrentStore.Url.TrimEnd('\\');
-            var failUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssist/CancelOrder");
-            var succesUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssist/Succes");
+            var siteUrl = _storeContext.CurrentStore.Url.TrimEnd('/');
+            var failUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/CancelOrder");
+            var succesUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/Succes");
             post.Add("MNT_FAIL_URL", failUrl);
             post.Add("MNT_SUCCESS_URL", succesUrl);
 
@@ -119,7 +119,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public decimal GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
         {
             var result = this.CalculateAdditionalFee(_orderTotalCalculationService, cart,
-                _monetaAssistPaymentSettings.AdditionalFee, _monetaAssistPaymentSettings.AdditionalFeePercentage);
+                _monetaAssistantPaymentSettings.AdditionalFee, _monetaAssistantPaymentSettings.AdditionalFeePercentage);
             return result;
         }
 
@@ -144,8 +144,8 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
         {
             actionName = "Configure";
-            controllerName = "PaymentMonetaAssist";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaAssist.Controllers" }, { "area", null } };
+            controllerName = "PaymentMonetaAssistant";
+            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaAssistant.Controllers" }, { "area", null } };
         }
 
         /// <summary>
@@ -157,8 +157,8 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public void GetPaymentInfoRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
         {
             actionName = "PaymentInfo";
-            controllerName = "PaymentMonetaAssist";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaAssist.Controllers" }, { "area", null } };
+            controllerName = "PaymentMonetaAssistant";
+            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.MonetaAssistant.Controllers" }, { "area", null } };
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         /// <returns>Controller type</returns>
         public Type GetControllerType()
         {
-            return typeof(PaymentMonetaAssistController);
+            return typeof(PaymentMonetaAssistantController);
         }
  
         /// <summary>
@@ -176,24 +176,24 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public override void Install()
         {
             //settings
-            var settings = new MonetaAssistPaymentSettings
+            var settings = new MonetaAssistantPaymentSettings
             {
                 MntTestMode = true,
             };
             _settingService.SaveSetting(settings);
 
             //locales
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId", "Store identifier");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId.Hint", "Specify the account ID of your store on the website moneta.ru (MNT_ID).");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode", "Test mode");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode.Hint", "Check to enable test mode.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode", "Hashcode");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode.Hint", "Set the data integrity code.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee", "Additional fee");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.RedirectionTip",
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntId", "Store identifier");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntId.Hint", "Specify the account ID of your store on the website moneta.ru (MNT_ID).");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntTestMode", "Test mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntTestMode.Hint", "Check to enable test mode.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.Hashcode", "Hashcode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.Hashcode.Hint", "Set the data integrity code.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFee", "Additional fee");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFee.Hint", "Enter additional fee to charge your customers.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFeePercentage", "Additional fee. Use percentage");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.RedirectionTip",
                 "For payment you will be redirected to the website MONETA.RU.");
 
             base.Install();
@@ -205,20 +205,20 @@ namespace Nop.Plugin.Payments.MonetaAssist
         public override void Uninstall()
         {
             //settings
-            _settingService.DeleteSetting<MonetaAssistPaymentSettings>();
+            _settingService.DeleteSetting<MonetaAssistantPaymentSettings>();
 
             //locales
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntId.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.MntTestMode.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.Hashcode.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFee.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.AdditionalFeePercentage.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssist.Fields.RedirectionTip");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntId");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntTestMode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.Hashcode");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntId.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.MntTestMode.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.Hashcode.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFee");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFee.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFeePercentage");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.AdditionalFeePercentage.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.MonetaAssistant.Fields.RedirectionTip");
 
             base.Uninstall();
         }
