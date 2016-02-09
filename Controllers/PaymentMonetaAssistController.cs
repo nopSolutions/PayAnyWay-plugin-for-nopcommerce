@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
@@ -29,6 +30,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
         private readonly PaymentSettings _paymentSettings;
         private readonly ILocalizationService _localizationService;
         private readonly IWebHelper _webHelper;
+        private readonly IStoreContext _storeContext;
 
 
         public PaymentMonetaAssistController(IWorkContext workContext,
@@ -39,7 +41,8 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             IOrderProcessingService orderProcessingService, 
             ILogger logger,
             PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, IWebHelper webHelper)
+            ILocalizationService localizationService, IWebHelper webHelper,
+            IStoreContext storeContext)
         {
             this._workContext = workContext;
             this._storeService = storeService;
@@ -51,6 +54,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             this._paymentSettings = paymentSettings;
             this._localizationService = localizationService;
             this._webHelper = webHelper;
+            this._storeContext = storeContext;
         }
 
         [AdminAuthorize]
@@ -151,7 +155,7 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
         {
             var msg = success ? "SUCCESS" : "FAIL";
             if(!success)
-                _logger.Error(textToResponse);
+                _logger.Error(String.Format("Moneta.Assist. {0}", textToResponse));
            
             return Content(String.Format("{0}\r\nnopCommerce. {1}", msg, textToResponse), "text/plain", Encoding.UTF8);
         }
@@ -185,9 +189,16 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
 
             var sb = new StringBuilder();
             sb.AppendLine("Moneta.Assist:");
-            foreach (KeyValuePair<string, string> kvp in HttpContext.Request.QueryString)
+            try
             {
-                sb.AppendLine(kvp.Key + ": " + kvp.Value);
+                foreach (KeyValuePair<string, string> kvp in HttpContext.Request.QueryString)
+                {
+                    sb.AppendLine(kvp.Key + ": " + kvp.Value);
+                }
+            }
+            catch (InvalidCastException)
+            {
+                _logger.Warning("MonetaAssist. Can't cast HttpContext.Request.QueryString");
             }
 
             //order note
@@ -214,6 +225,26 @@ namespace Nop.Plugin.Payments.MonetaAssist.Controllers
             return GetResponse("Your order has been paid", true);
         }
 
+        public ActionResult Succes(FormCollection form)
+        {
+            var order = _orderService.SearchOrders(storeId: _storeContext.CurrentStore.Id,
+                customerId: _workContext.CurrentCustomer.Id, pageSize: 1)
+                .FirstOrDefault();
+           
+            return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        public ActionResult CancelOrder(FormCollection form)
+        {
+            var order = _orderService.SearchOrders(storeId: _storeContext.CurrentStore.Id,
+                customerId: _workContext.CurrentCustomer.Id, pageSize: 1)
+                .FirstOrDefault();
+            if (_orderProcessingService.CanCancelOrder(order))
+            {
+                _orderProcessingService.CancelOrder(order, true);
+            }
+            return order != null ? RedirectToRoute("OrderDetails", new {orderId = order.Id}) : RedirectToAction("Index", "Home", new {area = ""});
+        }
 
         public override IList<string> ValidatePaymentForm(FormCollection form)
         {

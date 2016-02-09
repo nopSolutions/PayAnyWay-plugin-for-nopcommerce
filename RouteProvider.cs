@@ -14,6 +14,18 @@ namespace Nop.Plugin.Payments.MonetaAssist
                  new { controller = "PaymentMonetaAssist", action = "ConfirmPay" },
                  new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
             );
+            //Cancel
+            routes.MapRoute("Plugin.Payments.MonetaAssist.CancelOrder",
+                 "Plugins/MonetaAssist/CancelOrder",
+                 new { controller = "PaymentMonetaAssist", action = "CancelOrder" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
+            );
+            //Succes
+            routes.MapRoute("Plugin.Payments.MonetaAssist.Succes",
+                 "Plugins/MonetaAssist/Succes",
+                 new { controller = "PaymentMonetaAssist", action = "Succes" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssist.Controllers" }
+            );
         }
         public int Priority
         {

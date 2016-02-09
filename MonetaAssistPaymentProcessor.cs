@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Routing;
+using Nop.Core;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
@@ -27,6 +28,7 @@ namespace Nop.Plugin.Payments.MonetaAssist
         private readonly ICurrencyService _currencyService;
         private readonly CurrencySettings _currencySettings;
         private readonly IOrderTotalCalculationService _orderTotalCalculationService;
+        private readonly IStoreContext _storeContext;
 
         #endregion
 
@@ -36,13 +38,14 @@ namespace Nop.Plugin.Payments.MonetaAssist
             ISettingService settingService,
             ICurrencyService currencyService,
             CurrencySettings currencySettings,
-            IOrderTotalCalculationService orderTotalCalculationService)
+            IOrderTotalCalculationService orderTotalCalculationService, IStoreContext storeContext)
         {
             this._monetaAssistPaymentSettings = monetaAssistPaymentSettings;
             this._settingService = settingService;
             this._currencyService = currencyService;
             this._currencySettings = currencySettings;
             this._orderTotalCalculationService = orderTotalCalculationService;
+            this._storeContext = storeContext;
         }
 
         #endregion
@@ -86,6 +89,13 @@ namespace Nop.Plugin.Payments.MonetaAssist
             post.Add("MNT_TEST_MODE", model.MntTestMode.ToString());
             post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId.ToString());
             post.Add("MNT_SIGNATURE", model.MntSignature);
+            var failUrl = String.Format("{0}/{1}", _storeContext.CurrentStore.Url.TrimEnd(new[] {'\\'}),
+                "Plugins/MonetaAssist/CancelOrder");
+            var succesUrl = String.Format("{0}/{1}", _storeContext.CurrentStore.Url.TrimEnd(new[] { '\\' }),
+    "Plugins/MonetaAssist/Succes");
+            post.Add("MNT_FAIL_URL", failUrl);
+            post.Add("MNT_SUCCESS_URL", succesUrl);
+
             post.Post();
         }
 
