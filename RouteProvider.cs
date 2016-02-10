@@ -14,16 +14,16 @@ namespace Nop.Plugin.Payments.MonetaAssistant
                  new { controller = "PaymentMonetaAssistant", action = "ConfirmPay" },
                  new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
-            //Cancel
+            //cancel
             routes.MapRoute("Plugin.Payments.MonetaAssistant.CancelOrder",
                  "Plugins/MonetaAssistant/CancelOrder",
                  new { controller = "PaymentMonetaAssistant", action = "CancelOrder" },
                  new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
-            //Succes
-            routes.MapRoute("Plugin.Payments.MonetaAssistant.Succes",
-                 "Plugins/MonetaAssistant/Succes",
-                 new { controller = "PaymentMonetaAssistant", action = "Succes" },
+            //success
+            routes.MapRoute("Plugin.Payments.MonetaAssistant.Success",
+                 "Plugins/MonetaAssistant/Success",
+                 new { controller = "PaymentMonetaAssistant", action = "Success" },
                  new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
         }

@@ -80,7 +80,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant
             var post = new RemotePost
             {
                 FormName = "PayPoint",
-                Url = model.MonetaAssistantantUrl
+                Url = model.MonetaAssistantUrl
             };
             post.Add("MNT_ID", model.MntId);
             post.Add("MNT_TRANSACTION_ID", model.MntTransactionId);
@@ -91,9 +91,9 @@ namespace Nop.Plugin.Payments.MonetaAssistant
             post.Add("MNT_SIGNATURE", model.MntSignature);
             var siteUrl = _storeContext.CurrentStore.Url.TrimEnd('/');
             var failUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/CancelOrder");
-            var succesUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/Succes");
+            var successUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/Success");
             post.Add("MNT_FAIL_URL", failUrl);
-            post.Add("MNT_SUCCESS_URL", succesUrl);
+            post.Add("MNT_SUCCESS_URL", successUrl);
 
             post.Post();
         }

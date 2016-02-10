@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
-using Nop.Plugin.Payments.MonetaAssist.Models;
+using Nop.Plugin.Payments.MonetaAssistant.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -144,11 +144,11 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
 
             var model = MonetaAssistantPaymentRequest.CreateMonetaAssistantPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
             
-            var checkDtataString =
+            var checkDataString =
                 String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId,
                     model.MntAmount, model.MntCurrencyCode, model.MntSubscriberId, model.MntTestMode, model.MntHashcode);
 
-            return model.GetMD5(checkDtataString) == signature;
+            return model.GetMD5(checkDataString) == signature;
         }
 
         private ContentResult GetResponse(string textToResponse, bool success = false)
@@ -198,7 +198,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             }
             catch (InvalidCastException)
             {
-                _logger.Warning("MonetaAssistant. Can't cast HttpContext.Request.QueryString");
+                _logger.Warning("Moneta.Assistant. Can't cast HttpContext.Request.QueryString");
             }
 
             //order note
@@ -225,7 +225,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             return GetResponse("Your order has been paid", true);
         }
 
-        public ActionResult Succes(FormCollection form)
+        public ActionResult Success(FormCollection form)
         {
             var order = _orderService.SearchOrders(storeId: _storeContext.CurrentStore.Id,
                 customerId: _workContext.CurrentCustomer.Id, pageSize: 1)

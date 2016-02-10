@@ -82,18 +82,18 @@ namespace Nop.Plugin.Payments.MonetaAssistant
         }
 
         /// <summary>
-        /// MONETA.Assistantant url
+        /// MONETA.Assistant url
         /// </summary>
-        public string MonetaAssistantantUrl
+        public string MonetaAssistantUrl
         {
             get
             {
 #if DEBUG
-                return "https://demo.moneta.ru/Assistantant.htm";
+                return "https://demo.moneta.ru/assistant.htm";
 #endif
 
 #if !DEBUG
-                return "https://www.payanyway.ru/Assistantant.htm";
+                return "https://www.payanyway.ru/assistant.htm";
 #endif
             }
         }

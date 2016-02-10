@@ -1,7 +1,7 @@
 ﻿using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc;
 
-namespace Nop.Plugin.Payments.MonetaAssist.Models
+namespace Nop.Plugin.Payments.MonetaAssistant.Models
 {
     public class ConfigurationModel : BaseNopModel
     {
