@@ -227,23 +227,39 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
 
         public ActionResult Success(FormCollection form)
         {
-            var order = _orderService.SearchOrders(storeId: _storeContext.CurrentStore.Id,
-                customerId: _workContext.CurrentCustomer.Id, pageSize: 1)
-                .FirstOrDefault();
-           
-            return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
+            var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
+            Order order = null;
+
+            Guid orderGuid;
+            if (!Guid.TryParse(orderId, out orderGuid))
+            {
+                order = _orderService.GetOrderByGuid(orderGuid);
+            }
+
+            return order != null ? RedirectToRoute("CheckoutCompleted", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
         }
 
         public ActionResult CancelOrder(FormCollection form)
         {
-            var order = _orderService.SearchOrders(storeId: _storeContext.CurrentStore.Id,
-                customerId: _workContext.CurrentCustomer.Id, pageSize: 1)
-                .FirstOrDefault();
-            if (_orderProcessingService.CanCancelOrder(order))
+            var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
+            Order order=null;
+           
+            Guid orderGuid;
+            if (!Guid.TryParse(orderId, out orderGuid))
             {
-                _orderProcessingService.CancelOrder(order, true);
+                order = _orderService.GetOrderByGuid(orderGuid);
+                if (order != null && _orderProcessingService.CanCancelOrder(order))
+                {
+                    _orderProcessingService.CancelOrder(order, true);
+                }
             }
-            return order != null ? RedirectToRoute("OrderDetails", new {orderId = order.Id}) : RedirectToAction("Index", "Home", new {area = ""});
+
+            return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        public ActionResult Return(FormCollection form)
+        {
+           return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         public override IList<string> ValidatePaymentForm(FormCollection form)

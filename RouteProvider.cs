@@ -26,6 +26,12 @@ namespace Nop.Plugin.Payments.MonetaAssistant
                  new { controller = "PaymentMonetaAssistant", action = "Success" },
                  new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
             );
+            //return
+            routes.MapRoute("Plugin.Payments.MonetaAssistant.Return",
+                 "Plugins/MonetaAssistant/Return",
+                 new { controller = "PaymentMonetaAssistant", action = "Return" },
+                 new[] { "Nop.Plugin.Payments.MonetaAssistant.Controllers" }
+            );
         }
         public int Priority
         {

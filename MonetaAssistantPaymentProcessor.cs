@@ -92,8 +92,10 @@ namespace Nop.Plugin.Payments.MonetaAssistant
             var siteUrl = _storeContext.CurrentStore.Url.TrimEnd('/');
             var failUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/CancelOrder");
             var successUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/Success");
+            var returnUrl = String.Format("{0}/{1}", siteUrl, "Plugins/MonetaAssistant/Success");
             post.Add("MNT_FAIL_URL", failUrl);
             post.Add("MNT_SUCCESS_URL", successUrl);
+            post.Add("MNT_RETURN_URL", returnUrl);
 
             post.Post();
         }
