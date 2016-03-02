@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
@@ -30,7 +29,6 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         private readonly PaymentSettings _paymentSettings;
         private readonly ILocalizationService _localizationService;
         private readonly IWebHelper _webHelper;
-        private readonly IStoreContext _storeContext;
 
 
         public PaymentMonetaAssistantController(IWorkContext workContext,
@@ -41,8 +39,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             IOrderProcessingService orderProcessingService, 
             ILogger logger,
             PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, IWebHelper webHelper,
-            IStoreContext storeContext)
+            ILocalizationService localizationService, IWebHelper webHelper)
         {
             this._workContext = workContext;
             this._storeService = storeService;
@@ -54,7 +51,6 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             this._paymentSettings = paymentSettings;
             this._localizationService = localizationService;
             this._webHelper = webHelper;
-            this._storeContext = storeContext;
         }
 
         [AdminAuthorize]
@@ -242,16 +238,12 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         public ActionResult CancelOrder(FormCollection form)
         {
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
-            Order order=null;
+            Order order = null;
            
             Guid orderGuid;
             if (!Guid.TryParse(orderId, out orderGuid))
             {
                 order = _orderService.GetOrderByGuid(orderGuid);
-                if (order != null && _orderProcessingService.CanCancelOrder(order))
-                {
-                    _orderProcessingService.CancelOrder(order, true);
-                }
             }
 
             return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
