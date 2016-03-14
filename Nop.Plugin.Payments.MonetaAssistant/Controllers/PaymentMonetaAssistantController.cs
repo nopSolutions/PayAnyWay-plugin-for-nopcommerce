@@ -227,7 +227,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             Order order = null;
 
             Guid orderGuid;
-            if (!Guid.TryParse(orderId, out orderGuid))
+            if (Guid.TryParse(orderId, out orderGuid))
             {
                 order = _orderService.GetOrderByGuid(orderGuid);
             }
@@ -241,7 +241,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             Order order = null;
            
             Guid orderGuid;
-            if (!Guid.TryParse(orderId, out orderGuid))
+            if (Guid.TryParse(orderId, out orderGuid))
             {
                 order = _orderService.GetOrderByGuid(orderGuid);
             }
