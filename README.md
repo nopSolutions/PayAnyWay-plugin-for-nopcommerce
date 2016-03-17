@@ -4,6 +4,9 @@
 nopCommerce site: [http://www.nopcommerce.com](http://www.nopcommerce.com)
 
 
+Listing on nopCommerce "extensions and themes" catalog: [http://www.nopcommerce.com/p/2217/monetaru-payment-module-russia.aspx](http://www.nopcommerce.com/p/2217/monetaru-payment-module-russia.aspx)
+
+
 MONETA.Assistant details:
 
 * MONETA.ru site: [https://moneta.ru/](https://moneta.ru/)
