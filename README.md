@@ -4,7 +4,7 @@
 nopCommerce site: [http://www.nopcommerce.com](http://www.nopcommerce.com)
 
 
-Listing on nopCommerce "extensions and themes" catalog: [http://www.nopcommerce.com/p/2217/monetaru-payment-module-russia.aspx](http://www.nopcommerce.com/p/2217/monetaru-payment-module-russia.aspx)
+Listing on nopCommerce "extensions and themes" catalog: [https://www.nopcommerce.com/p/2217/payanywayru-payment-module-russia.aspx](https://www.nopcommerce.com/p/2217/payanywayru-payment-module-russia.aspx)
 
 
 * PayAnyWay site: [https://www.payanyway.ru/](https://www.payanyway.ru/)
