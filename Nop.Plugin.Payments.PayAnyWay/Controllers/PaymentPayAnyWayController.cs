@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
-using Nop.Plugin.Payments.MonetaAssistant.Models;
+using Nop.Plugin.Payments.PayAnyWay.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -15,9 +15,9 @@ using Nop.Services.Payments;
 using Nop.Services.Stores;
 using Nop.Web.Framework.Controllers;
 
-namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
+namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 {
-    public class PaymentMonetaAssistantController : BasePaymentController
+    public class PaymentPayAnyWayController : BasePaymentController
     {
         private readonly IWorkContext _workContext;
         private readonly IStoreService _storeService;
@@ -31,7 +31,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         private readonly IWebHelper _webHelper;
 
 
-        public PaymentMonetaAssistantController(IWorkContext workContext,
+        public PaymentPayAnyWayController(IWorkContext workContext,
             IStoreService storeService, 
             ISettingService settingService, 
             IPaymentService paymentService, 
@@ -59,31 +59,33 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         {
             //load settings for a chosen store scope
             var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
-            var monetaAssistantPaymentSettings = _settingService.LoadSetting<MonetaAssistantPaymentSettings>(storeScope);
+            var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             var model = new ConfigurationModel
             {
-                MntId = monetaAssistantPaymentSettings.MntId,
-                MntTestMode = monetaAssistantPaymentSettings.MntTestMode,
-                Hashcode = monetaAssistantPaymentSettings.Hashcode,
-                AdditionalFee = monetaAssistantPaymentSettings.AdditionalFee,
-                AdditionalFeePercentage = monetaAssistantPaymentSettings.AdditionalFeePercentage,
+                MntId = payAnyWayPaymentSettings.MntId,
+                MntTestMode = payAnyWayPaymentSettings.MntTestMode,
+                MntDemoArea = payAnyWayPaymentSettings.MntDemoArea,
+                Hashcode = payAnyWayPaymentSettings.Hashcode,
+                AdditionalFee = payAnyWayPaymentSettings.AdditionalFee,
+                AdditionalFeePercentage = payAnyWayPaymentSettings.AdditionalFeePercentage,
                 ActiveStoreScopeConfiguration = storeScope
             };
 
             if (storeScope > 0)
             {
-                model.MntIdOverrideForStore = _settingService.SettingExists(monetaAssistantPaymentSettings, x => x.MntId, storeScope);
-                model.MntTestModeOverrideForStore = _settingService.SettingExists(monetaAssistantPaymentSettings, x => x.MntTestMode, storeScope);
-                model.HashcodeOverrideForStore = _settingService.SettingExists(monetaAssistantPaymentSettings, x => x.Hashcode, storeScope);
-                model.AdditionalFeeOverrideForStore = _settingService.SettingExists(monetaAssistantPaymentSettings, x => x.AdditionalFee, storeScope);
-                model.AdditionalFeePercentageOverrideForStore = _settingService.SettingExists(monetaAssistantPaymentSettings, x => x.AdditionalFeePercentage, storeScope);
+                model.MntIdOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.MntId, storeScope);
+                model.MntTestModeOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.MntTestMode, storeScope);
+                model.MntDemoAreaOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.MntDemoArea, storeScope);
+                model.HashcodeOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.Hashcode, storeScope);
+                model.AdditionalFeeOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.AdditionalFee, storeScope);
+                model.AdditionalFeePercentageOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.AdditionalFeePercentage, storeScope);
             }
 
-            return View("~/Plugins/Payments.MonetaAssistant/Views/PaymentMonetaAssistant/Configure.cshtml", model);
+            return View("~/Plugins/Payments.PayAnyWay/Views/PaymentPayAnyWay/Configure.cshtml", model);
         }
 
-        private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, MonetaAssistantPaymentSettings settings, Expression<Func<MonetaAssistantPaymentSettings, TPropType>> keySelector)
+        private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, PayAnyWayPaymentSettings settings, Expression<Func<PayAnyWayPaymentSettings, TPropType>> keySelector)
         {
             if (overrideForStore || storeScope == 0)
                 _settingService.SaveSetting(settings, keySelector, storeScope, false);
@@ -101,23 +103,25 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
 
             //load settings for a chosen store scope
             var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
-            var monetaAssistantPaymentSettings = _settingService.LoadSetting<MonetaAssistantPaymentSettings>(storeScope);
+            var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             //save settings
-            monetaAssistantPaymentSettings.MntId = model.MntId;
-            monetaAssistantPaymentSettings.MntTestMode = model.MntTestMode;
-            monetaAssistantPaymentSettings.Hashcode = model.Hashcode;
-            monetaAssistantPaymentSettings.AdditionalFee = model.AdditionalFee;
-            monetaAssistantPaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
+            payAnyWayPaymentSettings.MntId = model.MntId;
+            payAnyWayPaymentSettings.MntTestMode = model.MntTestMode;
+            payAnyWayPaymentSettings.MntDemoArea = model.MntDemoArea;
+            payAnyWayPaymentSettings.Hashcode = model.Hashcode;
+            payAnyWayPaymentSettings.AdditionalFee = model.AdditionalFee;
+            payAnyWayPaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
 
             /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
              * and loaded from database after each update */
-            UpdateSetting(storeScope, model.MntIdOverrideForStore, monetaAssistantPaymentSettings, x => x.MntId);
-            UpdateSetting(storeScope, model.MntTestModeOverrideForStore, monetaAssistantPaymentSettings, x => x.MntTestMode);
-            UpdateSetting(storeScope, model.HashcodeOverrideForStore, monetaAssistantPaymentSettings, x => x.Hashcode);
-            UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, monetaAssistantPaymentSettings, x => x.AdditionalFee);
-            UpdateSetting(storeScope, model.AdditionalFeePercentageOverrideForStore, monetaAssistantPaymentSettings, x => x.AdditionalFeePercentage);
+            UpdateSetting(storeScope, model.MntIdOverrideForStore, payAnyWayPaymentSettings, x => x.MntId);
+            UpdateSetting(storeScope, model.MntTestModeOverrideForStore, payAnyWayPaymentSettings, x => x.MntTestMode);
+            UpdateSetting(storeScope, model.MntDemoAreaOverrideForStore, payAnyWayPaymentSettings, x => x.MntDemoArea);
+            UpdateSetting(storeScope, model.HashcodeOverrideForStore, payAnyWayPaymentSettings, x => x.Hashcode);
+            UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, payAnyWayPaymentSettings, x => x.AdditionalFee);
+            UpdateSetting(storeScope, model.AdditionalFeePercentageOverrideForStore, payAnyWayPaymentSettings, x => x.AdditionalFeePercentage);
 
             //now clear settings cache
             _settingService.ClearCache();
@@ -130,15 +134,15 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         [ChildActionOnly]
         public ActionResult PaymentInfo()
         {
-            return View("~/Plugins/Payments.MonetaAssistant/Views/PaymentMonetaAssistant/PaymentInfo.cshtml");
+            return View("~/Plugins/Payments.PayAnyWay/Views/PaymentPayAnyWay/PaymentInfo.cshtml");
         }
 
         private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
         {
             //load settings
-            var setting = _settingService.LoadSetting<MonetaAssistantPaymentSettings>();
+            var setting = _settingService.LoadSetting<PayAnyWayPaymentSettings>();
 
-            var model = MonetaAssistantPaymentRequest.CreateMonetaAssistantPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
+            var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
             
             var checkDataString =
                 String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId,
@@ -151,7 +155,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         {
             var msg = success ? "SUCCESS" : "FAIL";
             if(!success)
-                _logger.Error(String.Format("Moneta.Assistant. {0}", textToResponse));
+                _logger.Error(String.Format("PayAnyWay. {0}", textToResponse));
            
             return Content(String.Format("{0}\r\nnopCommerce. {1}", msg, textToResponse), "text/plain", Encoding.UTF8);
         }
@@ -160,10 +164,10 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
         public ActionResult ConfirmPay()
         {
             var processor =
-                _paymentService.LoadPaymentMethodBySystemName("Payments.MonetaAssistant") as MonetaAssistantPaymentProcessor;
+                _paymentService.LoadPaymentMethodBySystemName("Payments.PayAnyWay") as PayAnyWayPaymentProcessor;
             if (processor == null ||
                 !processor.IsPaymentMethodActive(_paymentSettings) || !processor.PluginDescriptor.Installed)
-                throw new NopException("MonetaAssistant module cannot be loaded");
+                throw new NopException("PayAnyWay module cannot be loaded");
 
 
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
@@ -184,7 +188,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             }
 
             var sb = new StringBuilder();
-            sb.AppendLine("Moneta.Assistant:");
+            sb.AppendLine("PayAnyWay:");
             try
             {
                 foreach (KeyValuePair<string, string> kvp in HttpContext.Request.QueryString)
@@ -194,7 +198,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant.Controllers
             }
             catch (InvalidCastException)
             {
-                _logger.Warning("Moneta.Assistant. Can't cast HttpContext.Request.QueryString");
+                _logger.Warning("PayAnyWay. Can't cast HttpContext.Request.QueryString");
             }
 
             //order note

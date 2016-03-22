@@ -7,8 +7,8 @@
     <ProjectGuid>{24EDD771-1B41-4394-B96C-D17BDB459C5F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nop.Plugin.Payments.MonetaAssistant</RootNamespace>
-    <AssemblyName>Nop.Plugin.Payments.MonetaAssistant</AssemblyName>
+    <RootNamespace>Nop.Plugin.Payments.PayAnyWay</RootNamespace>
+    <AssemblyName>Nop.Plugin.Payments.PayAnyWay</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.MonetaAssistant\</OutputPath>
+    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.PayAnyWay\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.MonetaDirect\</OutputPath>
+    <OutputPath>..\..\Presentation\Nop.Web\Plugins\Payments.PayAnyWay\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,17 +34,21 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc">
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\PaymentMonetaAssistantController.cs" />
+    <Compile Include="Controllers\PaymentPayAnyWayController.cs" />
     <Compile Include="Models\ConfigurationModel.cs" />
-    <Compile Include="MonetaAssistantPaymentRequest.cs" />
-    <Compile Include="MonetaAssistantPaymentProcessor.cs" />
-    <Compile Include="MonetaAssistantPaymentSettings.cs" />
+    <Compile Include="PayAnyWayPaymentRequest.cs" />
+    <Compile Include="PayAnyWayPaymentProcessor.cs" />
+    <Compile Include="PayAnyWayPaymentSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteProvider.cs" />
   </ItemGroup>
@@ -60,31 +64,31 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\PaymentPayAnyWay\Configure.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PaymentPayAnyWay\PaymentInfo.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Nop.Core\Nop.Core.csproj">
-      <Project>{6bda8332-939f-45b7-a25e-7a797260ae59}</Project>
+      <Project>{6BDA8332-939F-45B7-A25E-7A797260AE59}</Project>
       <Name>Nop.Core</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Nop.Services\Nop.Services.csproj">
-      <Project>{210541ad-f659-47da-8763-16f36c5cd2f4}</Project>
+      <Project>{210541AD-F659-47DA-8763-16F36C5CD2F4}</Project>
       <Name>Nop.Services</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Presentation\Nop.Web.Framework\Nop.Web.Framework.csproj">
-      <Project>{75fd4163-333c-4dd5-854d-2ef294e45d94}</Project>
+      <Project>{75FD4163-333C-4DD5-854D-2EF294E45D94}</Project>
       <Name>Nop.Web.Framework</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\PaymentMonetaAssistant\Configure.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\PaymentMonetaAssistant\PaymentInfo.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,8 +1,8 @@
 ﻿using Nop.Core.Configuration;
 
-namespace Nop.Plugin.Payments.MonetaAssistant
+namespace Nop.Plugin.Payments.PayAnyWay
 {
-    public class MonetaAssistantPaymentSettings : ISettings
+    public class PayAnyWayPaymentSettings : ISettings
     {
         /// <summary>
         /// The store identifier in the MONETA.RU
@@ -13,6 +13,11 @@ namespace Nop.Plugin.Payments.MonetaAssistant
         /// Indicates that the request is sent in a test mode
         /// </summary>
         public bool MntTestMode { get; set; }
+
+        /// <summary>
+        /// Indicates that the request is sent to the demo area
+        /// </summary>
+        public bool MntDemoArea { get; set; }
 
         /// <summary>
         /// Hashcode

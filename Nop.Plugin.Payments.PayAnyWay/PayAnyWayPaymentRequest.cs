@@ -2,11 +2,10 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using Nop.Web.Framework;
 
-namespace Nop.Plugin.Payments.MonetaAssistant
+namespace Nop.Plugin.Payments.PayAnyWay
 {
-    public class MonetaAssistantPaymentRequest
+    public class PayAnyWayPaymentRequest
     {
         /// <summary>
         /// The store identifier in the MONETA.RU
@@ -16,7 +15,7 @@ namespace Nop.Plugin.Payments.MonetaAssistant
         /// <summary>
         /// Amount
         /// </summary>
-        [NopResourceDisplayName("Plugins.Payments.MonetaAssistant.Fields.Amount")]
+       
         public string MntAmount { get; set; }
 
         /// <summary>
@@ -82,34 +81,17 @@ namespace Nop.Plugin.Payments.MonetaAssistant
         }
 
         /// <summary>
-        /// MONETA.Assistant url
+        /// Creates a PayAnyWayPaymentRequest
         /// </summary>
-        public string MonetaAssistantUrl
-        {
-            get
-            {
-#if DEBUG
-                return "https://demo.moneta.ru/assistant.htm";
-#endif
-
-#if !DEBUG
-                return "https://www.payanyway.ru/assistant.htm";
-#endif
-            }
-        }
-
-        /// <summary>
-        /// Creates a MonetaAssistantPaymentRequest
-        /// </summary>
-        /// <param name="settings">Moneta.Assistant payment settings</param>
+        /// <param name="settings">PayAnyWay payment settings</param>
         /// <param name="customerId">Customer identifier</param>
         /// <param name="orderGuid">Order GUID</param>
         /// <param name="orderTotal">Total sum</param>
         /// <param name="currencyCode">ISO currency code</param>
-        public static MonetaAssistantPaymentRequest CreateMonetaAssistantPaymentRequest(MonetaAssistantPaymentSettings settings,
+        public static PayAnyWayPaymentRequest CreatePayAnyWayPaymentRequest(PayAnyWayPaymentSettings settings,
             int customerId, Guid orderGuid, decimal orderTotal, string currencyCode)
         {
-            return new MonetaAssistantPaymentRequest
+            return new PayAnyWayPaymentRequest
             {
                 MntId = settings.MntId,
                 MntTestMode = settings.MntTestMode ? 1 : 0,

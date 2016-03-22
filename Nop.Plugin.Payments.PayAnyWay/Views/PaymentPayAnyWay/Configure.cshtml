@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "";
 }
-@model Nop.Plugin.Payments.MonetaAssistant.Models.ConfigurationModel
+@model Nop.Plugin.Payments.PayAnyWay.Models.ConfigurationModel
 @using Nop.Web.Framework;
 @Html.Action("StoreScopeConfiguration", "Setting", new { area = "Admin" })
 @using (Html.BeginForm())
@@ -10,24 +10,24 @@
     <table class="adminContent">
         <tr>
             <td colspan="2">
-                <b>If you're using this gateway ensure that your primary store currency is supported by Moneta.ru</b>
+                <b>Если вы используете этот платежный метод, убедитесь, что основная валюта магазина поддерживается сервисом PayAnyWay.</b>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                For Instructions on setting up an account in the payment system see the link
-                <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="MONETA.Assistant">MONETA.Assistant</a>
-                <b>on page eight</b>.
+                Полную инструкцию по настройке счета с описанием всех полей Вы можете найти по ссылке 
+                <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="PayAnyWay">MONETA.Assistant</a>
+                <b>на странице восемь</b>.
             </td>
         </tr>
         <tr>
             <td colspan="2">
                 <b>
-                    It is necessary to specify Pay URL like http://www.yourStore.com/Plugins/MonetaAssistant/ConfirmPay.
+                    Обязательно необходимо указать Pay URL такого образца: http://www.yourStore.com/Plugins/PayAnyWay/ConfirmPay. Заменив <b>www.yourStore.com</b> на адрес Вашего сайта
                     <br />
-                    HTTP Method field should be GET.
+                    HTTP метод должен быть выставлен в GET.
                     <br/>
-                    The settings "you can override the settings in the URL" should be YES
+                    Свойство "Можно переопределять настройки в url" должно быть выставлено в "ДА"
                 </b>
             </td>
         </tr>
@@ -54,6 +54,16 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.MntTestMode)
                 @Html.ValidationMessageFor(model => model.MntTestMode)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.MntDemoAreaOverrideForStore, model => model.MntDemoArea, Model.ActiveStoreScopeConfiguration)
+                @Html.NopLabelFor(model => model.MntDemoArea):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MntDemoArea)
+                @Html.ValidationMessageFor(model => model.MntDemoArea)
             </td>
         </tr>
         <tr>
