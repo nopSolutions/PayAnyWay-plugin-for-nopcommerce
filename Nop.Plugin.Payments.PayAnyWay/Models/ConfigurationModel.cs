@@ -6,9 +6,9 @@ namespace Nop.Plugin.Payments.PayAnyWay.Models
     public class ConfigurationModel : BaseNopModel
     {
         public int ActiveStoreScopeConfiguration { get; set; }
-        
+
         /// <summary>
-        /// The store identifier in the MONETA.RU
+        /// The store identifier in the PayAnyWay
         /// </summary>
         [NopResourceDisplayName("Plugins.Payments.PayAnyWay.Fields.MntId")]
         public string MntId { get; set; }

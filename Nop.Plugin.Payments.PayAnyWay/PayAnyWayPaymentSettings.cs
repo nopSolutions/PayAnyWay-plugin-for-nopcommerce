@@ -5,7 +5,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
     public class PayAnyWayPaymentSettings : ISettings
     {
         /// <summary>
-        /// The store identifier in the MONETA.RU
+        /// The store identifier in the PayAnyWay
         /// </summary>
         public string MntId { get; set; }
 
