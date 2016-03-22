@@ -216,9 +216,11 @@ namespace Nop.Plugin.Payments.PayAnyWay
             //locales
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode");
+            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode.Hint");
+            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee.Hint");
