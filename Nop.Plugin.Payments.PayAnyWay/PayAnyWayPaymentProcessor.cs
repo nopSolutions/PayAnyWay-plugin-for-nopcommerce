@@ -22,8 +22,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
     public class PayAnyWayPaymentProcessor : BasePlugin, IPaymentMethod
     {
         #region Fields
-
-        private readonly PayAnyWayPaymentSettings _payAnyWayPaymentSettings;
+        
         private readonly ISettingService _settingService;
         private readonly ICurrencyService _currencyService;
         private readonly CurrencySettings _currencySettings;
@@ -37,13 +36,11 @@ namespace Nop.Plugin.Payments.PayAnyWay
 
         #region Ctor
 
-        public PayAnyWayPaymentProcessor(PayAnyWayPaymentSettings payAnyWayPaymentSettings,
-            ISettingService settingService,
+        public PayAnyWayPaymentProcessor(ISettingService settingService,
             ICurrencyService currencyService,
             CurrencySettings currencySettings,
             IOrderTotalCalculationService orderTotalCalculationService, IStoreContext storeContext)
         {
-            this._payAnyWayPaymentSettings = payAnyWayPaymentSettings;
             this._settingService = settingService;
             this._currencyService = currencyService;
             this._currencySettings = currencySettings;
@@ -76,14 +73,15 @@ namespace Nop.Plugin.Payments.PayAnyWay
             var orderTotal = postProcessPaymentRequest.Order.OrderTotal;
 
             var currencyCode = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode;
+            var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(_storeContext.CurrentStore.Id);
 
-            var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(_payAnyWayPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
+            var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(payAnyWayPaymentSettings, customerId, orderGuid, orderTotal, currencyCode);
             
             //create and send post data
             var post = new RemotePost
             {
                 FormName = "PayPoint",
-                Url = _payAnyWayPaymentSettings.MntDemoArea ? DEMO_MONETA_URL : MONETA_URL
+                Url = payAnyWayPaymentSettings.MntDemoArea ? DEMO_MONETA_URL : MONETA_URL
             };
             post.Add("MNT_ID", model.MntId);
             post.Add("MNT_TRANSACTION_ID", model.MntTransactionId);
@@ -123,8 +121,10 @@ namespace Nop.Plugin.Payments.PayAnyWay
         /// <returns>Additional handling fee</returns>
         public decimal GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
         {
+            var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(_storeContext.CurrentStore.Id);
+
             var result = this.CalculateAdditionalFee(_orderTotalCalculationService, cart,
-                _payAnyWayPaymentSettings.AdditionalFee, _payAnyWayPaymentSettings.AdditionalFeePercentage);
+                payAnyWayPaymentSettings.AdditionalFee, payAnyWayPaymentSettings.AdditionalFeePercentage);
             return result;
         }
 
