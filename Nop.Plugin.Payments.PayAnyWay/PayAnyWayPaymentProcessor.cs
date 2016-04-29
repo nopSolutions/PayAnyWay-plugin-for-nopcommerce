@@ -59,7 +59,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
         /// <returns>Process payment result</returns>
         public ProcessPaymentResult ProcessPayment(ProcessPaymentRequest processPaymentRequest)
         {
-            return new ProcessPaymentResult {NewPaymentStatus = PaymentStatus.Pending};
+            return new ProcessPaymentResult { NewPaymentStatus = PaymentStatus.Pending };
         }
 
         /// <summary>

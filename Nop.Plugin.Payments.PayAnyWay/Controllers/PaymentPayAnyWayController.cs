@@ -30,7 +30,6 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly IWebHelper _webHelper;
 
-
         public PaymentPayAnyWayController(IWorkContext workContext,
             IStoreService storeService, 
             ISettingService settingService, 
@@ -154,7 +153,8 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
         private ContentResult GetResponse(string textToResponse, bool success = false)
         {
             var msg = success ? "SUCCESS" : "FAIL";
-            if(!success)
+
+            if (!success)
                 _logger.Error(String.Format("PayAnyWay. {0}", textToResponse));
            
             return Content(String.Format("{0}\r\nnopCommerce. {1}", msg, textToResponse), "text/plain", Encoding.UTF8);
@@ -168,7 +168,6 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             if (processor == null ||
                 !processor.IsPaymentMethodActive(_paymentSettings) || !processor.PluginDescriptor.Installed)
                 throw new NopException("PayAnyWay module cannot be loaded");
-
 
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
@@ -236,7 +235,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
                 order = _orderService.GetOrderByGuid(orderGuid);
             }
 
-            return order != null ? RedirectToRoute("CheckoutCompleted", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
+            return order != null ? RedirectToRoute("CheckoutCompleted", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = String.Empty });
         }
 
         public ActionResult CancelOrder(FormCollection form)
@@ -250,12 +249,12 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
                 order = _orderService.GetOrderByGuid(orderGuid);
             }
 
-            return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = "" });
+            return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = String.Empty });
         }
 
         public ActionResult Return(FormCollection form)
         {
-           return RedirectToAction("Index", "Home", new { area = "" });
+           return RedirectToAction("Index", "Home", new { area = String.Empty });
         }
 
         public override IList<string> ValidatePaymentForm(FormCollection form)

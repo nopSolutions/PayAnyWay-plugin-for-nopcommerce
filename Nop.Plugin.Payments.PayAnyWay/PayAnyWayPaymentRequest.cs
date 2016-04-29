@@ -15,7 +15,6 @@ namespace Nop.Plugin.Payments.PayAnyWay
         /// <summary>
         /// Amount
         /// </summary>
-       
         public string MntAmount { get; set; }
 
         /// <summary>
