@@ -7,101 +7,100 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <table class="adminContent">
-        <tr>
-            <td colspan="2">
-                <b>Если вы используете этот платежный метод, убедитесь, что основная валюта магазина поддерживается сервисом PayAnyWay.</b>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                Полную инструкцию по настройке счета с описанием всех полей Вы можете найти по ссылке 
-                <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="PayAnyWay">MONETA.Assistant</a>
-                <b>на странице восемь</b>.
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <b>
-                    Обязательно необходимо указать Pay URL такого образца: http://www.yourStore.com/Plugins/PayAnyWay/ConfirmPay. Заменив <b>www.yourStore.com</b> на адрес Вашего сайта
-                    <br />
-                    HTTP метод должен быть выставлен в GET.
-                    <br/>
-                    Свойство "Можно переопределять настройки в url" должно быть выставлено в "ДА"
-                </b>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <hr/>
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.MntIdOverrideForStore, model => model.MntId, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.MntId):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.MntId)
-                @Html.ValidationMessageFor(model => model.MntId)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.MntTestModeOverrideForStore, model => model.MntTestMode, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.MntTestMode):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.MntTestMode)
-                @Html.ValidationMessageFor(model => model.MntTestMode)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.MntDemoAreaOverrideForStore, model => model.MntDemoArea, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.MntDemoArea):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.MntDemoArea)
-                @Html.ValidationMessageFor(model => model.MntDemoArea)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.HashcodeOverrideForStore, model => model.Hashcode, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.Hashcode):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.Hashcode)
-                @Html.ValidationMessageFor(model => model.Hashcode)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeeOverrideForStore, model => model.AdditionalFee, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.AdditionalFee):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.AdditionalFee)
-                @Html.ValidationMessageFor(model => model.AdditionalFee)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeePercentageOverrideForStore, model => model.AdditionalFeePercentage, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.AdditionalFeePercentage):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.AdditionalFeePercentage)
-                @Html.ValidationMessageFor(model => model.AdditionalFeePercentage)
-            </td>
-        </tr>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>
+                    <b>Если вы используете этот платежный метод, убедитесь, что основная валюта магазина поддерживается сервисом PayAnyWay.</b><br/>
+                    Полную инструкцию по настройке счета с описанием всех полей Вы можете найти по ссылке
+                    <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="PayAnyWay">MONETA.Assistant</a>
+                    <b>на странице восемь</b>.<br/>
 
-        <tr>
-            <td colspan="2">
-                <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            </td>
-        </tr>
-    </table>
-    
+                    <b>
+                        Обязательно необходимо указать Pay URL такого образца: http://www.yourStore.com/Plugins/PayAnyWay/ConfirmPay. Заменив <b>www.yourStore.com</b> на адрес Вашего сайта
+                        <br />
+                        HTTP метод должен быть выставлен в GET.
+                        <br />
+                        Свойство "Можно переопределять настройки в url" должно быть выставлено в "ДА"
+                    </b>
+                </p>
+                
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.MntIdOverrideForStore, model => model.MntId, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.MntId)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.MntId)
+                        @Html.ValidationMessageFor(model => model.MntId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.MntTestModeOverrideForStore, model => model.MntTestMode, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.MntTestMode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.MntTestMode)
+                        @Html.ValidationMessageFor(model => model.MntTestMode)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.MntDemoAreaOverrideForStore, model => model.MntDemoArea, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.MntDemoArea)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.MntDemoArea)
+                        @Html.ValidationMessageFor(model => model.MntDemoArea)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.HashcodeOverrideForStore, model => model.Hashcode, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.Hashcode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.Hashcode)
+                        @Html.ValidationMessageFor(model => model.Hashcode)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeeOverrideForStore, model => model.AdditionalFee, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.AdditionalFee)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AdditionalFee)
+                        @Html.ValidationMessageFor(model => model.AdditionalFee)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeePercentageOverrideForStore, model => model.AdditionalFeePercentage, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.AdditionalFeePercentage)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.NopEditorFor(model => model.AdditionalFeePercentage)
+                        @Html.ValidationMessageFor(model => model.AdditionalFeePercentage)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-9">
+                        <input type="submit" name="save" class="btn bg-blue" value="@T("Admin.Common.Save")"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
