@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
 using Nop.Core;
@@ -83,15 +82,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 
             return View("~/Plugins/Payments.PayAnyWay/Views/PaymentPayAnyWay/Configure.cshtml", model);
         }
-
-        private void UpdateSetting<TPropType>(int storeScope, bool overrideForStore, PayAnyWayPaymentSettings settings, Expression<Func<PayAnyWayPaymentSettings, TPropType>> keySelector)
-        {
-            if (overrideForStore || storeScope == 0)
-                _settingService.SaveSetting(settings, keySelector, storeScope, false);
-            else if (storeScope > 0)
-                _settingService.DeleteSetting(settings, keySelector, storeScope);
-        }
-
+        
         [HttpPost]
         [AdminAuthorize]
         [ChildActionOnly]
@@ -115,12 +106,12 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
              * and loaded from database after each update */
-            UpdateSetting(storeScope, model.MntIdOverrideForStore, payAnyWayPaymentSettings, x => x.MntId);
-            UpdateSetting(storeScope, model.MntTestModeOverrideForStore, payAnyWayPaymentSettings, x => x.MntTestMode);
-            UpdateSetting(storeScope, model.MntDemoAreaOverrideForStore, payAnyWayPaymentSettings, x => x.MntDemoArea);
-            UpdateSetting(storeScope, model.HashcodeOverrideForStore, payAnyWayPaymentSettings, x => x.Hashcode);
-            UpdateSetting(storeScope, model.AdditionalFeeOverrideForStore, payAnyWayPaymentSettings, x => x.AdditionalFee);
-            UpdateSetting(storeScope, model.AdditionalFeePercentageOverrideForStore, payAnyWayPaymentSettings, x => x.AdditionalFeePercentage);
+            _settingService.SaveSettingOverridablePerStore(payAnyWayPaymentSettings, x => x.MntId, model.MntIdOverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(payAnyWayPaymentSettings, x => x.MntTestMode, model.MntTestModeOverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(payAnyWayPaymentSettings, x => x.MntDemoArea, model.MntDemoAreaOverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(payAnyWayPaymentSettings, x => x.Hashcode, model.HashcodeOverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(payAnyWayPaymentSettings, x => x.AdditionalFee, model.AdditionalFeeOverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(payAnyWayPaymentSettings, x => x.AdditionalFeePercentage, model.AdditionalFeePercentageOverrideForStore, storeScope, false);
 
             //now clear settings cache
             _settingService.ClearCache();
@@ -138,14 +129,13 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 
         private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
         {
-            //load settings
-            var setting = _settingService.LoadSetting<PayAnyWayPaymentSettings>();
+            //load settings for a chosen store scope
+            var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
+            var setting = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
             
-            var checkDataString =
-                String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId,
-                    model.MntAmount, model.MntCurrencyCode, model.MntSubscriberId, model.MntTestMode, model.MntHashcode);
+            var checkDataString = String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId, model.MntAmount, model.MntCurrencyCode, model.MntSubscriberId, model.MntTestMode, model.MntHashcode);
 
             return model.GetMD5(checkDataString) == signature;
         }
