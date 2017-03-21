@@ -64,12 +64,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\PaymentPayAnyWay\Configure.cshtml">
+    <Content Include="Views\Configure.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\PaymentPayAnyWay\PaymentInfo.cshtml">
+    <Content Include="Views\PaymentInfo.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

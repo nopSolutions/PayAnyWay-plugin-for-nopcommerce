@@ -28,6 +28,8 @@ namespace Nop.Plugin.Payments.PayAnyWay
         private readonly CurrencySettings _currencySettings;
         private readonly IOrderTotalCalculationService _orderTotalCalculationService;
         private readonly IStoreContext _storeContext;
+        private readonly ILocalizationService _localizationService;
+        private readonly IWebHelper _webHelper;
 
         const string MONETA_URL = "https://www.moneta.ru/assistant.htm";
         const string DEMO_MONETA_URL = "https://demo.moneta.ru/assistant.htm";
@@ -39,13 +41,18 @@ namespace Nop.Plugin.Payments.PayAnyWay
         public PayAnyWayPaymentProcessor(ISettingService settingService,
             ICurrencyService currencyService,
             CurrencySettings currencySettings,
-            IOrderTotalCalculationService orderTotalCalculationService, IStoreContext storeContext)
+            IOrderTotalCalculationService orderTotalCalculationService, 
+            IStoreContext storeContext,
+            ILocalizationService localizationService,
+            IWebHelper webHelper)
         {
             this._settingService = settingService;
             this._currencyService = currencyService;
             this._currencySettings = currencySettings;
             this._orderTotalCalculationService = orderTotalCalculationService;
             this._storeContext = storeContext;
+            this._localizationService = localizationService;
+            this._webHelper = webHelper;
         }
 
         #endregion
@@ -90,10 +97,10 @@ namespace Nop.Plugin.Payments.PayAnyWay
             post.Add("MNT_TEST_MODE", model.MntTestMode.ToString());
             post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId.ToString());
             post.Add("MNT_SIGNATURE", model.MntSignature);
-            var siteUrl = _storeContext.CurrentStore.Url.TrimEnd('/');
-            var failUrl = String.Format("{0}/{1}", siteUrl, "Plugins/PayAnyWay/CancelOrder");
-            var successUrl = String.Format("{0}/{1}", siteUrl, "Plugins/PayAnyWay/Success");
-            var returnUrl = String.Format("{0}/{1}", siteUrl, "Plugins/PayAnyWay/Return");
+            var siteUrl = _webHelper.GetStoreLocation();
+            var failUrl = String.Format("{0}{1}", siteUrl, "Plugins/PayAnyWay/CancelOrder");
+            var successUrl = String.Format("{0}{1}", siteUrl, "Plugins/PayAnyWay/Success");
+            var returnUrl = String.Format("{0}{1}", siteUrl, "Plugins/PayAnyWay/Return");
             post.Add("MNT_FAIL_URL", failUrl);
             post.Add("MNT_SUCCESS_URL", successUrl);
             post.Add("MNT_RETURN_URL", returnUrl);
@@ -201,7 +208,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage", "Комиссия в процентах");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage.Hint", "Определяет, следует ли применять процентную комиссию от общей стоимости заказа. Если не включен, используется фиксированная комиссия.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.RedirectionTip", "Для оплаты Вы будете перенаправлены на сайт MONETA.RU.");
-
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription", "Для оплаты Вы будете перенаправлены на сайт MONETA.RU.");
             base.Install();
         }
 
@@ -227,6 +234,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.RedirectionTip");
+            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription");
 
             base.Uninstall();
         }
@@ -349,6 +357,14 @@ namespace Nop.Plugin.Payments.PayAnyWay
         public bool SkipPaymentInfo
         {
             get { return false; }
+        }
+
+        /// <summary>
+        /// Gets a payment method description that will be displayed on checkout pages in the public store
+        /// </summary>
+        public string PaymentMethodDescription
+        {
+            get { return _localizationService.GetResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription"); }
         }
 
         #endregion

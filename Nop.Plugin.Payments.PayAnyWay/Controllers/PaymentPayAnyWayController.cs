@@ -80,7 +80,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
                 model.AdditionalFeePercentageOverrideForStore = _settingService.SettingExists(payAnyWayPaymentSettings, x => x.AdditionalFeePercentage, storeScope);
             }
 
-            return View("~/Plugins/Payments.PayAnyWay/Views/PaymentPayAnyWay/Configure.cshtml", model);
+            return View("~/Plugins/Payments.PayAnyWay/Views/Configure.cshtml", model);
         }
         
         [HttpPost]
@@ -124,7 +124,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
         [ChildActionOnly]
         public ActionResult PaymentInfo()
         {
-            return View("~/Plugins/Payments.PayAnyWay/Views/PaymentPayAnyWay/PaymentInfo.cshtml");
+            return View("~/Plugins/Payments.PayAnyWay/Views/PaymentInfo.cshtml");
         }
 
         private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
