@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
@@ -11,8 +10,11 @@ using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
+using Nop.Services.Security;
 using Nop.Services.Stores;
+using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
+using Nop.Web.Framework.Mvc.Filters;
 
 namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 {
@@ -28,6 +30,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
         private readonly PaymentSettings _paymentSettings;
         private readonly ILocalizationService _localizationService;
         private readonly IWebHelper _webHelper;
+        private readonly IPermissionService _permissionService;
 
         public PaymentPayAnyWayController(IWorkContext workContext,
             IStoreService storeService, 
@@ -37,7 +40,9 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             IOrderProcessingService orderProcessingService, 
             ILogger logger,
             PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, IWebHelper webHelper)
+            ILocalizationService localizationService, 
+            IWebHelper webHelper,
+            IPermissionService permissionService)
         {
             this._workContext = workContext;
             this._storeService = storeService;
@@ -49,12 +54,39 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             this._paymentSettings = paymentSettings;
             this._localizationService = localizationService;
             this._webHelper = webHelper;
+            this._permissionService = permissionService;
         }
 
-        [AdminAuthorize]
-        [ChildActionOnly]
-        public ActionResult Configure()
+        private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
         {
+            //load settings for a chosen store scope
+            var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
+            var setting = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
+
+            var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
+
+            var checkDataString = $"{model.MntId}{model.MntTransactionId}{operationId}{model.MntAmount}{model.MntCurrencyCode}{model.MntSubscriberId}{model.MntTestMode}{model.MntHashcode}";
+
+            return model.GetMD5(checkDataString) == signature;
+        }
+
+        private ContentResult GetResponse(string textToResponse, bool success = false)
+        {
+            var msg = success ? "SUCCESS" : "FAIL";
+
+            if (!success)
+                _logger.Error($"PayAnyWay. {textToResponse}");
+
+            return Content($"{msg}\r\nnopCommerce. {textToResponse}", "text/plain", Encoding.UTF8);
+        }
+
+        [AuthorizeAdmin]
+        [Area(AreaNames.Admin)]
+        public IActionResult Configure()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManagePaymentMethods))
+                return AccessDeniedView();
+
             //load settings for a chosen store scope
             var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
             var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
@@ -84,15 +116,18 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
         }
         
         [HttpPost]
-        [AdminAuthorize]
-        [ChildActionOnly]
-        public ActionResult Configure(ConfigurationModel model)
+        [AuthorizeAdmin]
+        [Area(AreaNames.Admin)]
+        public IActionResult Configure(ConfigurationModel model)
         {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManagePaymentMethods))
+                return AccessDeniedView();
+
             if (!ModelState.IsValid)
                 return Configure();
 
             //load settings for a chosen store scope
-            var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
+            var storeScope = GetActiveStoreScopeConfiguration(_storeService, _workContext);
             var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             //save settings
@@ -120,38 +155,8 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 
             return Configure();
         }
-
-        [ChildActionOnly]
-        public ActionResult PaymentInfo()
-        {
-            return View("~/Plugins/Payments.PayAnyWay/Views/PaymentInfo.cshtml");
-        }
-
-        private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
-        {
-            //load settings for a chosen store scope
-            var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
-            var setting = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
-
-            var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
-            
-            var checkDataString = String.Format("{0}{1}{2}{3}{4}{5}{6}{7}", model.MntId, model.MntTransactionId, operationId, model.MntAmount, model.MntCurrencyCode, model.MntSubscriberId, model.MntTestMode, model.MntHashcode);
-
-            return model.GetMD5(checkDataString) == signature;
-        }
-
-        private ContentResult GetResponse(string textToResponse, bool success = false)
-        {
-            var msg = success ? "SUCCESS" : "FAIL";
-
-            if (!success)
-                _logger.Error(String.Format("PayAnyWay. {0}", textToResponse));
-           
-            return Content(String.Format("{0}\r\nnopCommerce. {1}", msg, textToResponse), "text/plain", Encoding.UTF8);
-        }
-
-        [ValidateInput(false)]
-        public ActionResult ConfirmPay()
+        
+        public IActionResult ConfirmPay()
         {
             var processor =
                 _paymentService.LoadPaymentMethodBySystemName("Payments.PayAnyWay") as PayAnyWayPaymentProcessor;
@@ -164,8 +169,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
             var currencyCode = _webHelper.QueryString<string>("MNT_CURRENCY_CODE");
 
-            Guid orderGuid;
-            if (!Guid.TryParse(orderId, out orderGuid))
+            if (!Guid.TryParse(orderId, out Guid orderGuid))
             {
                 return GetResponse("Invalid order GUID");
             }
@@ -180,7 +184,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             sb.AppendLine("PayAnyWay:");
             try
             {
-                foreach (KeyValuePair<string, string> kvp in HttpContext.Request.QueryString)
+                foreach (var kvp in Request.Query)
                 {
                     sb.AppendLine(kvp.Key + ": " + kvp.Value);
                 }
@@ -214,47 +218,41 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             return GetResponse("Your order has been paid", true);
         }
 
-        public ActionResult Success(FormCollection form)
+        public IActionResult Success()
         {
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
             Order order = null;
 
-            Guid orderGuid;
-            if (Guid.TryParse(orderId, out orderGuid))
+            if (Guid.TryParse(orderId, out Guid orderGuid))
             {
                 order = _orderService.GetOrderByGuid(orderGuid);
             }
 
-            return order != null ? RedirectToRoute("CheckoutCompleted", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = String.Empty });
+            if (order == null)
+                return RedirectToAction("Index", "Home", new {area = string.Empty});
+
+            return RedirectToRoute("CheckoutCompleted", new {orderId = order.Id});
         }
 
-        public ActionResult CancelOrder(FormCollection form)
+        public IActionResult CancelOrder()
         {
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
             Order order = null;
-           
-            Guid orderGuid;
-            if (Guid.TryParse(orderId, out orderGuid))
+
+            if (Guid.TryParse(orderId, out Guid orderGuid))
             {
                 order = _orderService.GetOrderByGuid(orderGuid);
             }
 
-            return order != null ? RedirectToRoute("OrderDetails", new { orderId = order.Id }) : RedirectToAction("Index", "Home", new { area = String.Empty });
+            if (order == null)
+                return RedirectToAction("Index", "Home", new {area = string.Empty});
+
+            return RedirectToRoute("OrderDetails", new {orderId = order.Id});
         }
 
-        public ActionResult Return(FormCollection form)
+        public IActionResult Return()
         {
-           return RedirectToAction("Index", "Home", new { area = String.Empty });
-        }
-
-        public override IList<string> ValidatePaymentForm(FormCollection form)
-        {
-            return new List<string>();
-        }
-
-        public override ProcessPaymentRequest GetPaymentInfo(FormCollection form)
-        {
-            return new ProcessPaymentRequest();
+           return RedirectToAction("Index", "Home", new { area = string.Empty });
         }
     }
 }

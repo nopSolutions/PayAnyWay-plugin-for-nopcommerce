@@ -49,9 +49,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
         {
             get
             {
-                var text =
-                    String.Format("{0}{1}{2}{3}{4}{5}{6}", MntId, MntTransactionId, MntAmount, MntCurrencyCode,
-                        MntSubscriberId, MntTestMode, MntHashcode);
+                var text = $"{MntId}{MntTransactionId}{MntAmount}{MntCurrencyCode}{MntSubscriberId}{MntTestMode}{MntHashcode}";
 
                 return GetMD5(text);
             }
@@ -98,7 +96,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
                 MntSubscriberId = customerId,
                 MntTransactionId = orderGuid.ToString(),
                 MntCurrencyCode = currencyCode,
-                MntAmount = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
+                MntAmount = string.Format(CultureInfo.InvariantCulture, "{0:0.00}", orderTotal)
             };
         }
     }

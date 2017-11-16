@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Routing;
+using Microsoft.AspNetCore.Http;
 using Nop.Core;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
@@ -98,9 +98,9 @@ namespace Nop.Plugin.Payments.PayAnyWay
             post.Add("MNT_SUBSCRIBER_ID", model.MntSubscriberId.ToString());
             post.Add("MNT_SIGNATURE", model.MntSignature);
             var siteUrl = _webHelper.GetStoreLocation();
-            var failUrl = String.Format("{0}{1}", siteUrl, "Plugins/PayAnyWay/CancelOrder");
-            var successUrl = String.Format("{0}{1}", siteUrl, "Plugins/PayAnyWay/Success");
-            var returnUrl = String.Format("{0}{1}", siteUrl, "Plugins/PayAnyWay/Return");
+            var failUrl = $"{siteUrl}Plugins/PayAnyWay/CancelOrder";
+            var successUrl = $"{siteUrl}Plugins/PayAnyWay/Success";
+            var returnUrl = $"{siteUrl}Plugins/PayAnyWay/Return";
             post.Add("MNT_FAIL_URL", failUrl);
             post.Add("MNT_SUCCESS_URL", successUrl);
             post.Add("MNT_RETURN_URL", returnUrl);
@@ -147,30 +147,24 @@ namespace Nop.Plugin.Payments.PayAnyWay
             return !((DateTime.UtcNow - order.CreatedOnUtc).TotalSeconds < 5);
         }
 
-        /// <summary>
-        /// Gets a route for provider configuration
-        /// </summary>
-        /// <param name="actionName">Action name</param>
-        /// <param name="controllerName">Controller name</param>
-        /// <param name="routeValues">Route values</param>
-        public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
+        public override string GetConfigurationPageUrl()
         {
-            actionName = "Configure";
-            controllerName = "PaymentPayAnyWay";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.PayAnyWay.Controllers" }, { "area", null } };
+            return $"{_webHelper.GetStoreLocation()}Admin/PaymentPayAnyWay/Configure";
         }
 
-        /// <summary>
-        /// Gets a route for payment info
-        /// </summary>
-        /// <param name="actionName">Action name</param>
-        /// <param name="controllerName">Controller name</param>
-        /// <param name="routeValues">Route values</param>
-        public void GetPaymentInfoRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
+        public void GetPublicViewComponent(out string viewComponentName)
         {
-            actionName = "PaymentInfo";
-            controllerName = "PaymentPayAnyWay";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.Payments.PayAnyWay.Controllers" }, { "area", null } };
+            viewComponentName = "PaymentPayAnyWay";
+        }
+
+        public IList<string> ValidatePaymentForm(IFormCollection form)
+        {
+            return new List<string>();
+        }
+
+        public ProcessPaymentRequest GetPaymentInfo(IFormCollection form)
+        {
+            return new ProcessPaymentRequest();
         }
 
         /// <summary>

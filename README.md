@@ -1,4 +1,4 @@
-﻿nopCommerce MONETA.Assistant plugin
+﻿nopCommerce PayAnyWay plugin
 ===========
 
 nopCommerce site: [http://www.nopcommerce.com](http://www.nopcommerce.com)

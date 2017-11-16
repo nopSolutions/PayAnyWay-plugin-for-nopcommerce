@@ -1,20 +1,19 @@
 ﻿@{
-    Layout = "";
+    Layout = "_ConfigurePlugin";
 }
 @model Nop.Plugin.Payments.PayAnyWay.Models.ConfigurationModel
-@using Nop.Web.Framework;
-@Html.Action("StoreScopeConfiguration", "Setting", new { area = "Admin" })
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+
+<form asp-controller="PaymentPayAnyWay" asp-action="Configure" method="post">
     <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-body">
                 <p>
-                    <b>Если вы используете этот платежный метод, убедитесь, что основная валюта магазина поддерживается сервисом PayAnyWay.</b><br/>
+                    <b>Если вы используете этот платежный метод, убедитесь, что основная валюта магазина поддерживается сервисом PayAnyWay.</b><br />
                     Полную инструкцию по настройке счета с описанием всех полей Вы можете найти по ссылке
                     <a href="https://moneta.ru/doc/MONETA.Assistant.ru.pdf" rel="PayAnyWay">MONETA.Assistant</a>
-                    <b>на странице восемь</b>.<br/>
+                    <b>на странице восемь</b>.<br />
 
                     <b>
                         Обязательно необходимо указать Pay URL такого образца: http://www.yourStore.com/Plugins/PayAnyWay/ConfirmPay. Заменив <b>www.yourStore.com</b> на адрес Вашего сайта
@@ -24,71 +23,71 @@
                         Свойство "Можно переопределять настройки в url" должно быть выставлено в "ДА"
                     </b>
                 </p>
-                
+
 
                 <div class="form-group">
                     <div class="col-md-3">
-                        @Html.OverrideStoreCheckboxFor(model => model.MntIdOverrideForStore, model => model.MntId, Model.ActiveStoreScopeConfiguration)
-                        @Html.NopLabelFor(model => model.MntId)
+                        <nop-override-store-checkbox asp-for="MntIdOverrideForStore" asp-input="MntId" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="MntId" />
                     </div>
                     <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.MntId)
-                        @Html.ValidationMessageFor(model => model.MntId)
+                        <nop-editor asp-for="MntId" />
+                        <span asp-validation-for="MntId"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-3">
-                        @Html.OverrideStoreCheckboxFor(model => model.MntTestModeOverrideForStore, model => model.MntTestMode, Model.ActiveStoreScopeConfiguration)
-                        @Html.NopLabelFor(model => model.MntTestMode)
+                        <nop-override-store-checkbox asp-for="MntTestModeOverrideForStore" asp-input="MntTestMode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="MntTestMode" />
                     </div>
                     <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.MntTestMode)
-                        @Html.ValidationMessageFor(model => model.MntTestMode)
+                        <nop-editor asp-for="MntTestMode" />
+                        <span asp-validation-for="MntTestMode"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-3">
-                        @Html.OverrideStoreCheckboxFor(model => model.MntDemoAreaOverrideForStore, model => model.MntDemoArea, Model.ActiveStoreScopeConfiguration)
-                        @Html.NopLabelFor(model => model.MntDemoArea)
+                        <nop-override-store-checkbox asp-for="MntDemoAreaOverrideForStore" asp-input="MntDemoArea" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="MntDemoArea" />
                     </div>
                     <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.MntDemoArea)
-                        @Html.ValidationMessageFor(model => model.MntDemoArea)
+                        <nop-editor asp-for="MntDemoArea" />
+                        <span asp-validation-for="MntDemoArea"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-3">
-                        @Html.OverrideStoreCheckboxFor(model => model.HashcodeOverrideForStore, model => model.Hashcode, Model.ActiveStoreScopeConfiguration)
-                        @Html.NopLabelFor(model => model.Hashcode)
+                        <nop-override-store-checkbox asp-for="HashcodeOverrideForStore" asp-input="Hashcode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="Hashcode" />
                     </div>
                     <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.Hashcode)
-                        @Html.ValidationMessageFor(model => model.Hashcode)
+                        <nop-editor asp-for="Hashcode" />
+                        <span asp-validation-for="Hashcode"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-3">
-                        @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeeOverrideForStore, model => model.AdditionalFee, Model.ActiveStoreScopeConfiguration)
-                        @Html.NopLabelFor(model => model.AdditionalFee)
+                        <nop-override-store-checkbox asp-for="AdditionalFeeOverrideForStore" asp-input="AdditionalFee" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="AdditionalFee" />
                     </div>
                     <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.AdditionalFee)
-                        @Html.ValidationMessageFor(model => model.AdditionalFee)
+                        <nop-editor asp-for="AdditionalFee" />
+                        <span asp-validation-for="AdditionalFee"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-3">
-                        @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeePercentageOverrideForStore, model => model.AdditionalFeePercentage, Model.ActiveStoreScopeConfiguration)
-                        @Html.NopLabelFor(model => model.AdditionalFeePercentage)
+                        <nop-override-store-checkbox asp-for="AdditionalFeePercentageOverrideForStore" asp-input="AdditionalFeePercentage" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="AdditionalFeePercentage" />
                     </div>
                     <div class="col-md-9">
-                        @Html.NopEditorFor(model => model.AdditionalFeePercentage)
-                        @Html.ValidationMessageFor(model => model.AdditionalFeePercentage)
+                        <nop-editor asp-for="AdditionalFeePercentage" />
+                        <span asp-validation-for="AdditionalFeePercentage"></span>
                     </div>
                 </div>
 
@@ -97,10 +96,10 @@
                         &nbsp;
                     </div>
                     <div class="col-md-9">
-                        <input type="submit" name="save" class="btn bg-blue" value="@T("Admin.Common.Save")"/>
+                        <input type="submit" name="save" class="btn bg-blue" value="@T("Admin.Common.Save")" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
-}
+</form>

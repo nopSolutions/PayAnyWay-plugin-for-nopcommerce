@@ -34,5 +34,4 @@ namespace Nop.Plugin.Payments.PayAnyWay
         /// </summary>
         public decimal AdditionalFee { get; set; }
     }
-
 }
