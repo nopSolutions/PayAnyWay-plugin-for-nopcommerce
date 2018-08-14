@@ -6,11 +6,9 @@ using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Plugins;
-using Nop.Plugin.Payments.PayAnyWay.Controllers;
 using Nop.Services.Configuration;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
-using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Web.Framework;
 
@@ -22,14 +20,14 @@ namespace Nop.Plugin.Payments.PayAnyWay
     public class PayAnyWayPaymentProcessor : BasePlugin, IPaymentMethod
     {
         #region Fields
-        
-        private readonly ISettingService _settingService;
+
         private readonly ICurrencyService _currencyService;
-        private readonly CurrencySettings _currencySettings;
-        private readonly IOrderTotalCalculationService _orderTotalCalculationService;
-        private readonly IStoreContext _storeContext;
         private readonly ILocalizationService _localizationService;
+        private readonly IPaymentService _paymentService;
+        private readonly ISettingService _settingService;
+        private readonly IStoreContext _storeContext;
         private readonly IWebHelper _webHelper;
+        private readonly CurrencySettings _currencySettings;
 
         const string MONETA_URL = "https://www.moneta.ru/assistant.htm";
         const string DEMO_MONETA_URL = "https://demo.moneta.ru/assistant.htm";
@@ -38,21 +36,21 @@ namespace Nop.Plugin.Payments.PayAnyWay
 
         #region Ctor
 
-        public PayAnyWayPaymentProcessor(ISettingService settingService,
-            ICurrencyService currencyService,
-            CurrencySettings currencySettings,
-            IOrderTotalCalculationService orderTotalCalculationService, 
-            IStoreContext storeContext,
+        public PayAnyWayPaymentProcessor(ICurrencyService currencyService,
             ILocalizationService localizationService,
-            IWebHelper webHelper)
+            IPaymentService paymentService,
+            ISettingService settingService,
+            IStoreContext storeContext,
+            IWebHelper webHelper,
+            CurrencySettings currencySettings)
         {
-            this._settingService = settingService;
             this._currencyService = currencyService;
-            this._currencySettings = currencySettings;
-            this._orderTotalCalculationService = orderTotalCalculationService;
-            this._storeContext = storeContext;
             this._localizationService = localizationService;
+            this._paymentService = paymentService;
+            this._settingService = settingService;
+            this._storeContext = storeContext;
             this._webHelper = webHelper;
+            this._currencySettings = currencySettings;
         }
 
         #endregion
@@ -111,7 +109,7 @@ namespace Nop.Plugin.Payments.PayAnyWay
         /// <summary>
         /// Returns a value indicating whether payment method should be hidden during checkout
         /// </summary>
-        /// <param name="cart">Shoping cart</param>
+        /// <param name="cart">Shopping cart</param>
         /// <returns>true - hide; false - display.</returns>
         public bool HidePaymentMethod(IList<ShoppingCartItem> cart)
         {
@@ -124,14 +122,15 @@ namespace Nop.Plugin.Payments.PayAnyWay
         /// <summary>
         /// Gets additional handling fee
         /// </summary>
-        /// <param name="cart">Shoping cart</param>
+        /// <param name="cart">Shopping cart</param>
         /// <returns>Additional handling fee</returns>
         public decimal GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
         {
             var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(_storeContext.CurrentStore.Id);
 
-            var result = this.CalculateAdditionalFee(_orderTotalCalculationService, cart,
+            var result = _paymentService.CalculateAdditionalFee(cart,
                 payAnyWayPaymentSettings.AdditionalFee, payAnyWayPaymentSettings.AdditionalFeePercentage);
+
             return result;
         }
 
@@ -152,9 +151,9 @@ namespace Nop.Plugin.Payments.PayAnyWay
             return $"{_webHelper.GetStoreLocation()}Admin/PaymentPayAnyWay/Configure";
         }
 
-        public void GetPublicViewComponent(out string viewComponentName)
+        public string GetPublicViewComponentName()
         {
-            viewComponentName = "PaymentPayAnyWay";
+            return "PaymentPayAnyWay";
         }
 
         public IList<string> ValidatePaymentForm(IFormCollection form)
@@ -168,15 +167,6 @@ namespace Nop.Plugin.Payments.PayAnyWay
         }
 
         /// <summary>
-        /// Get controller type
-        /// </summary>
-        /// <returns>Controller type</returns>
-        public Type GetControllerType()
-        {
-            return typeof(PaymentPayAnyWayController);
-        }
- 
-        /// <summary>
         /// Install plugin method
         /// </summary>
         public override void Install()
@@ -189,20 +179,20 @@ namespace Nop.Plugin.Payments.PayAnyWay
             _settingService.SaveSetting(settings);
 
             //locales
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId", "Идентификатор магазина");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId.Hint", "Укажите номер счета Вашего магазина. Получить его можно в личном кабинете на сайте http://moneta.ru. (в документации данное поле соответствует параметру MNT_ID).");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode", "Тестовый режим");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode.Hint", "Если выбрано, то все запросы к платежному сервису будут выполняться в тестовом режиме, то есть реального списания денег производится не будет. Внимание, для корректной работы данной функции она должна быть активирована одновременно в настройках плагина и счета.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea", "Использовать демо площадку");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea.Hint", "Если выбрано, то все запросы к платежному сервису будут выполняться на тестовой площадке, а не на основном сайте. (Подробней о демо площадке вы можете узнать в документации к MONETA.Assistant)");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode", "Код проверки целостности данных");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode.Hint", "Укажите код проверки целостности данных. Получить его можно в личном кабинете на сайте http://moneta.ru.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee", "Комиссия");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee.Hint", "Введите дополнительную плату, взымаемую с клиентов.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage", "Комиссия в процентах");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage.Hint", "Определяет, следует ли применять процентную комиссию от общей стоимости заказа. Если не включен, используется фиксированная комиссия.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.RedirectionTip", "Для оплаты Вы будете перенаправлены на сайт MONETA.RU.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription", "Для оплаты Вы будете перенаправлены на сайт MONETA.RU.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId", "Идентификатор магазина");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId.Hint", "Укажите номер счета Вашего магазина. Получить его можно в личном кабинете на сайте http://moneta.ru. (в документации данное поле соответствует параметру MNT_ID).");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode", "Тестовый режим");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode.Hint", "Если выбрано, то все запросы к платежному сервису будут выполняться в тестовом режиме, то есть реального списания денег производится не будет. Внимание, для корректной работы данной функции она должна быть активирована одновременно в настройках плагина и счета.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea", "Использовать демо площадку");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea.Hint", "Если выбрано, то все запросы к платежному сервису будут выполняться на тестовой площадке, а не на основном сайте. (Подробней о демо площадке вы можете узнать в документации к MONETA.Assistant)");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode", "Код проверки целостности данных");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode.Hint", "Укажите код проверки целостности данных. Получить его можно в личном кабинете на сайте http://moneta.ru.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee", "Комиссия");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee.Hint", "Введите дополнительную плату, взымаемую с клиентов.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage", "Комиссия в процентах");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage.Hint", "Определяет, следует ли применять процентную комиссию от общей стоимости заказа. Если не включен, используется фиксированная комиссия.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.RedirectionTip", "Для оплаты Вы будете перенаправлены на сайт MONETA.RU.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription", "Для оплаты Вы будете перенаправлены на сайт MONETA.RU.");
             base.Install();
         }
 
@@ -215,20 +205,20 @@ namespace Nop.Plugin.Payments.PayAnyWay
             _settingService.DeleteSetting<PayAnyWayPaymentSettings>();
 
             //locales
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage.Hint");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.RedirectionTip");
-            this.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntId.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntTestMode.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.MntDemoArea.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.Hashcode.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFee.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.AdditionalFeePercentage.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.RedirectionTip");
+            _localizationService.DeletePluginLocaleResource("Plugins.Payments.PayAnyWay.Fields.PaymentMethodDescription");
 
             base.Uninstall();
         }

@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
-using Nop.Core.Domain.Payments;
 using Nop.Plugin.Payments.PayAnyWay.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
@@ -11,7 +10,6 @@ using Nop.Services.Logging;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Security;
-using Nop.Services.Stores;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
@@ -20,52 +18,46 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 {
     public class PaymentPayAnyWayController : BasePaymentController
     {
-        private readonly IWorkContext _workContext;
-        private readonly IStoreService _storeService;
-        private readonly ISettingService _settingService;
-        private readonly IPaymentService _paymentService;
-        private readonly IOrderService _orderService;
-        private readonly IOrderProcessingService _orderProcessingService;
-        private readonly ILogger _logger;
-        private readonly PaymentSettings _paymentSettings;
         private readonly ILocalizationService _localizationService;
-        private readonly IWebHelper _webHelper;
+        private readonly ILogger _logger;
+        private readonly IOrderProcessingService _orderProcessingService;
+        private readonly IOrderService _orderService;
+        private readonly IPaymentService _paymentService;
         private readonly IPermissionService _permissionService;
+        private readonly ISettingService _settingService;
+        private readonly IStoreContext _storeContext;
+        private readonly IWebHelper _webHelper;
 
-        public PaymentPayAnyWayController(IWorkContext workContext,
-            IStoreService storeService, 
-            ISettingService settingService, 
-            IPaymentService paymentService, 
-            IOrderService orderService, 
-            IOrderProcessingService orderProcessingService, 
+        public PaymentPayAnyWayController(ILocalizationService localizationService,
             ILogger logger,
-            PaymentSettings paymentSettings, 
-            ILocalizationService localizationService, 
-            IWebHelper webHelper,
-            IPermissionService permissionService)
+            IOrderProcessingService orderProcessingService,
+            IOrderService orderService,
+            IPaymentService paymentService,
+            IPermissionService permissionService,
+            ISettingService settingService,
+            IStoreContext storeContext,
+            IWebHelper webHelper)
         {
-            this._workContext = workContext;
-            this._storeService = storeService;
-            this._settingService = settingService;
-            this._paymentService = paymentService;
-            this._orderService = orderService;
-            this._orderProcessingService = orderProcessingService;
-            this._logger = logger;
-            this._paymentSettings = paymentSettings;
             this._localizationService = localizationService;
-            this._webHelper = webHelper;
+            this._logger = logger;
+            this._orderProcessingService = orderProcessingService;
+            this._orderService = orderService;
+            this._paymentService = paymentService;
             this._permissionService = permissionService;
+            this._settingService = settingService;
+            this._storeContext = storeContext;
+            this._webHelper = webHelper;
         }
 
         private bool CheckOrderData(Order order, string operationId, string signature, string currencyCode)
         {
             //load settings for a chosen store scope
-            var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
+            var storeScope = _storeContext.ActiveStoreScopeConfiguration;
             var setting = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             var model = PayAnyWayPaymentRequest.CreatePayAnyWayPaymentRequest(setting, order.CustomerId, order.OrderGuid, order.OrderTotal, currencyCode);
 
-            var checkDataString = $"{model.MntId}{model.MntTransactionId}{operationId}{model.MntAmount}{model.MntCurrencyCode}{model.MntSubscriberId}{model.MntTestMode}{model.MntHashcode}";
+            var checkDataString = $"{model.MntId}{model.MntTransactionId}{operationId}{model.MntAmount}{model.MntCurrencyCode.ToUpper()}{model.MntSubscriberId}{model.MntTestMode}{model.MntHashcode}";
 
             return model.GetMD5(checkDataString) == signature;
         }
@@ -87,8 +79,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManagePaymentMethods))
                 return AccessDeniedView();
 
-            //load settings for a chosen store scope
-            var storeScope = this.GetActiveStoreScopeConfiguration(_storeService, _workContext);
+            var storeScope = _storeContext.ActiveStoreScopeConfiguration;
             var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             var model = new ConfigurationModel
@@ -127,7 +118,7 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
                 return Configure();
 
             //load settings for a chosen store scope
-            var storeScope = GetActiveStoreScopeConfiguration(_storeService, _workContext);
+            var storeScope = _storeContext.ActiveStoreScopeConfiguration;
             var payAnyWayPaymentSettings = _settingService.LoadSetting<PayAnyWayPaymentSettings>(storeScope);
 
             //save settings
@@ -155,19 +146,20 @@ namespace Nop.Plugin.Payments.PayAnyWay.Controllers
 
             return Configure();
         }
-        
+
+
         public IActionResult ConfirmPay()
         {
             var processor =
                 _paymentService.LoadPaymentMethodBySystemName("Payments.PayAnyWay") as PayAnyWayPaymentProcessor;
             if (processor == null ||
-                !processor.IsPaymentMethodActive(_paymentSettings) || !processor.PluginDescriptor.Installed)
+                !_paymentService.IsPaymentMethodActive(processor) || !processor.PluginDescriptor.Installed)
                 throw new NopException("PayAnyWay module cannot be loaded");
 
             var orderId = _webHelper.QueryString<string>("MNT_TRANSACTION_ID");
             var signature = _webHelper.QueryString<string>("MNT_SIGNATURE");
             var operationId = _webHelper.QueryString<string>("MNT_OPERATION_ID");
-            var currencyCode = _webHelper.QueryString<string>("MNT_CURRENCY_CODE");
+            var currencyCode = _webHelper.QueryString<string>("MNT_CURRENCY_CODE").ToUpper();
 
             if (!Guid.TryParse(orderId, out Guid orderGuid))
             {
